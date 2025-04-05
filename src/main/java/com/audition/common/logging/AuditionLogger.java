@@ -1,12 +1,14 @@
 package com.audition.common.logging;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuditionLogger {
+
+    private static final String DEFAULT_BASIC_RESPONSE_MESSAGE = "Error Code: %s - %s";
+    private static final String DEFAULT_PROBLEM_DETAIL_MESSAGE = "Title: %s\nStatus: %s\nDetail: %s\nInstance: %s";
 
     public void info(final Logger logger, final String message) {
         if (logger.isInfoEnabled()) {
@@ -58,12 +60,14 @@ public class AuditionLogger {
     }
 
     private String createStandardProblemDetailMessage(final ProblemDetail standardProblemDetail) {
-        // TODO Add implementation here.
-        return StringUtils.EMPTY;
+        return String.format(DEFAULT_PROBLEM_DETAIL_MESSAGE,
+            standardProblemDetail.getTitle(),
+            standardProblemDetail.getStatus(),
+            standardProblemDetail.getDetail(),
+            standardProblemDetail.getInstance());
     }
 
     private String createBasicErrorResponseMessage(final Integer errorCode, final String message) {
-        // TODO Add implementation here.
-        return StringUtils.EMPTY;
+        return String.format(DEFAULT_BASIC_RESPONSE_MESSAGE, errorCode, message);
     }
 }

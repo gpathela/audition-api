@@ -13,6 +13,7 @@ checkstyle {
     reportsDir = file("$project.buildDir/reports/checkstyle")
     showViolations = true
     toolVersion = "10.9.3"
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
 }
 
 checkstyleMain.source = "src/main/java"
@@ -75,3 +76,7 @@ spotbugsMain {
         }
     }
 }
+
+check.dependsOn 'checkstyleMain', 'checkstyleTest'
+check.dependsOn 'pmdMain', 'pmdTest'
+check.dependsOn 'spotbugsMain', 'spotbugsTest'

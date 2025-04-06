@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.web.advice.ExceptionControllerAdviceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-04-06T01:49:40" hostname="AMAL3W7R5J7W5" time="0.377">
-  <properties/>
-  <testcase name="handleSystemException_withInvalidStatus_shouldReturn500()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.377"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

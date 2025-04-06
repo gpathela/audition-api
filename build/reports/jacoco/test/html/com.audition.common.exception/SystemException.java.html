@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SystemException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">audition-api</a> &gt; <a href="index.source.html" class="el_package">com.audition.common.exception</a> &gt; <span class="el_source">SystemException.java</span></div><h1>SystemException.java</h1><pre class="source lang-java linenums">package com.audition.common.exception;
+
+import lombok.Getter;
+
+@Getter
+public class SystemException extends RuntimeException {
+
+    public static final String DEFAULT_TITLE = &quot;API Error Occurred&quot;;
+    private static final long serialVersionUID = -5876728854007114881L;
+<span class="nc" id="L10">    private Integer statusCode;</span>
+<span class="nc" id="L11">    private String title;</span>
+<span class="nc" id="L12">    private String detail;</span>
+
+    public SystemException() {
+<span class="nc" id="L15">        super();</span>
+<span class="nc" id="L16">    }</span>
+
+    public SystemException(final String message) {
+<span class="nc" id="L19">        super(message);</span>
+<span class="nc" id="L20">        this.title = DEFAULT_TITLE;</span>
+<span class="nc" id="L21">    }</span>
+
+    public SystemException(final String message, final Integer errorCode) {
+<span class="nc" id="L24">        super(message);</span>
+<span class="nc" id="L25">        this.title = DEFAULT_TITLE;</span>
+<span class="nc" id="L26">        this.statusCode = errorCode;</span>
+<span class="nc" id="L27">    }</span>
+
+    public SystemException(final String message, final Throwable exception) {
+<span class="nc" id="L30">        super(message, exception);</span>
+<span class="nc" id="L31">        this.title = DEFAULT_TITLE;</span>
+<span class="nc" id="L32">    }</span>
+
+    public SystemException(final String detail, final String title, final Integer errorCode) {
+<span class="nc" id="L35">        super(detail);</span>
+<span class="nc" id="L36">        this.statusCode = errorCode;</span>
+<span class="nc" id="L37">        this.title = title;</span>
+<span class="nc" id="L38">        this.detail = detail;</span>
+<span class="nc" id="L39">    }</span>
+
+    public SystemException(final String detail, final String title, final Throwable exception) {
+<span class="nc" id="L42">        super(detail, exception);</span>
+<span class="nc" id="L43">        this.title = title;</span>
+<span class="nc" id="L44">        this.statusCode = 500;</span>
+<span class="nc" id="L45">        this.detail = detail;</span>
+<span class="nc" id="L46">    }</span>
+
+    public SystemException(final String detail, final Integer errorCode, final Throwable exception) {
+<span class="nc" id="L49">        super(detail, exception);</span>
+<span class="nc" id="L50">        this.statusCode = errorCode;</span>
+<span class="nc" id="L51">        this.title = DEFAULT_TITLE;</span>
+<span class="nc" id="L52">        this.detail = detail;</span>
+<span class="nc" id="L53">    }</span>
+
+    public SystemException(final String detail, final String title, final Integer errorCode,
+        final Throwable exception) {
+<span class="nc" id="L57">        super(detail, exception);</span>
+<span class="nc" id="L58">        this.statusCode = errorCode;</span>
+<span class="nc" id="L59">        this.title = title;</span>
+<span class="nc" id="L60">        this.detail = detail;</span>
+<span class="nc" id="L61">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

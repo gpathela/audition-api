@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuditionIntegrationClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">audition-api</a> &gt; <a href="index.source.html" class="el_package">com.audition.integration</a> &gt; <span class="el_source">AuditionIntegrationClient.java</span></div><h1>AuditionIntegrationClient.java</h1><pre class="source lang-java linenums">package com.audition.integration;
+
+import com.audition.common.exception.SystemException;
+import com.audition.model.AuditionPost;
+import com.audition.model.AuditionPostComment;
+import com.audition.model.AuditionPostWithComments;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+@Component
+<span class="nc" id="L19">public class AuditionIntegrationClient {</span>
+
+    private static final String TYPECODE_URL = &quot;https://jsonplaceholder.typicode.com&quot;;
+    private static final String POSTS_URL = TYPECODE_URL + &quot;/posts&quot;;
+    private static final String COMMENTS_URL = TYPECODE_URL + &quot;/comments&quot;;
+
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public List&lt;AuditionPost&gt; getPosts() {
+        try {
+<span class="nc" id="L31">            ResponseEntity&lt;List&lt;AuditionPost&gt;&gt; response = restTemplate.exchange(</span>
+                POSTS_URL,
+                HttpMethod.GET,
+                null,
+<span class="nc" id="L35">                new ParameterizedTypeReference&lt;List&lt;AuditionPost&gt;&gt;() {</span>
+                }
+            );
+
+<span class="nc" id="L39">            return response.getBody();</span>
+<span class="nc" id="L40">        } catch (RestClientException ex) {</span>
+<span class="nc" id="L41">            throw new SystemException(ex.getMessage(), ex);</span>
+        }
+    }
+
+    public AuditionPost getPostById(final String id) {
+        try {
+<span class="nc" id="L47">            String url = POSTS_URL + &quot;/&quot; + id;</span>
+<span class="nc" id="L48">            ResponseEntity&lt;AuditionPost&gt; response = restTemplate.exchange(</span>
+                url,
+                HttpMethod.GET,
+                null,
+                AuditionPost.class
+            );
+<span class="nc" id="L54">            return response.getBody();</span>
+<span class="nc" id="L55">        } catch (final HttpClientErrorException e) {</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {</span>
+<span class="nc" id="L57">                throw new SystemException(&quot;Cannot find a Post with id &quot; + id, &quot;Resource Not Found&quot;,</span>
+<span class="nc" id="L58">                    HttpStatus.NOT_FOUND.value());</span>
+            } else {
+<span class="nc" id="L60">                throw new SystemException(&quot;Error fetching post with id &quot; + id + &quot;: &quot; + e.getMessage(),</span>
+                    &quot;Error Fetching Post&quot;,
+                    e);
+            }
+<span class="nc" id="L64">        } catch (RestClientException e) {</span>
+<span class="nc" id="L65">            throw new SystemException(&quot;Unexpected error: &quot; + e.getMessage(), &quot;Error Fetching Post&quot;, e);</span>
+        }
+    }
+
+    public AuditionPostWithComments getPostWithComments(final String postId) {
+        try {
+<span class="nc" id="L71">            AuditionPost post = getPostById(postId); // reuse your existing method</span>
+<span class="nc" id="L72">            String url = POSTS_URL + &quot;/&quot; + postId + &quot;/comments&quot;;</span>
+<span class="nc" id="L73">            ResponseEntity&lt;List&lt;AuditionPostComment&gt;&gt; response = restTemplate.exchange(</span>
+                url,
+                HttpMethod.GET,
+                null,
+<span class="nc" id="L77">                new ParameterizedTypeReference&lt;List&lt;AuditionPostComment&gt;&gt;() {</span>
+                }
+            );
+<span class="nc" id="L80">            List&lt;AuditionPostComment&gt; comments = response.getBody();</span>
+<span class="nc" id="L81">            return new AuditionPostWithComments(post, comments);</span>
+<span class="nc" id="L82">        } catch (final RestClientException e) {</span>
+<span class="nc" id="L83">            throw new SystemException(</span>
+<span class="nc" id="L84">                &quot;Failed to fetch post with comments for postId &quot; + postId + &quot;: &quot; + e.getMessage(),</span>
+                &quot;Error Fetching Post With Comments&quot;,
+                e
+            );
+        }
+    }
+
+    public List&lt;AuditionPostComment&gt; getCommentsForPost(final String postId) {
+        try {
+<span class="nc" id="L93">            String url = TYPECODE_URL + &quot;/comments?postId=&quot; + postId;</span>
+<span class="nc" id="L94">            ResponseEntity&lt;List&lt;AuditionPostComment&gt;&gt; response = restTemplate.exchange(</span>
+                url,
+                HttpMethod.GET,
+                null,
+<span class="nc" id="L98">                new ParameterizedTypeReference&lt;List&lt;AuditionPostComment&gt;&gt;() {</span>
+                }
+            );
+<span class="nc" id="L101">            return response.getBody();</span>
+<span class="nc" id="L102">        } catch (RestClientException e) {</span>
+<span class="nc" id="L103">            throw new SystemException(</span>
+<span class="nc" id="L104">                &quot;Failed to fetch comments for postId &quot; + postId + &quot;: &quot; + e.getMessage(),</span>
+                &quot;Error Fetching Comments&quot;,
+                e
+            );
+        }
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

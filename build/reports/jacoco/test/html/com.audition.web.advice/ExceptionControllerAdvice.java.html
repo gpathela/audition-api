@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExceptionControllerAdvice.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">audition-api</a> &gt; <a href="index.source.html" class="el_package">com.audition.web.advice</a> &gt; <span class="el_source">ExceptionControllerAdvice.java</span></div><h1>ExceptionControllerAdvice.java</h1><pre class="source lang-java linenums">package com.audition.web.advice;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
+
+import com.audition.common.exception.SystemException;
+import com.audition.common.logging.AuditionLogger;
+import io.micrometer.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+
+@ControllerAdvice
+<span class="nc" id="L22">public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {</span>
+
+    public static final String DEFAULT_TITLE = &quot;API Error Occurred&quot;;
+<span class="nc" id="L25">    private static final Logger LOG = LoggerFactory.getLogger(ExceptionControllerAdvice.class);</span>
+    private static final String ERROR_MESSAGE = &quot; Error Code from Exception could not be mapped to a valid HttpStatus Code - &quot;;
+    private static final String DEFAULT_MESSAGE = &quot;API Error occurred. Please contact support or administrator.&quot;;
+
+    @Autowired
+    private AuditionLogger logger;
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    ProblemDetail handleHttpClientException(final HttpClientErrorException e) {
+<span class="nc" id="L34">        return createProblemDetail(e, e.getStatusCode());</span>
+
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    ProblemDetail handleMainException(final Exception e) {
+<span class="nc" id="L41">        logger.error(LOG, e.getMessage());</span>
+<span class="nc" id="L42">        final HttpStatusCode status = getHttpStatusCodeFromException(e);</span>
+<span class="nc" id="L43">        return createProblemDetail(e, status);</span>
+
+    }
+
+    @ExceptionHandler(SystemException.class)
+    ProblemDetail handleSystemException(final SystemException e) {
+<span class="nc" id="L49">        logger.error(LOG, e.getMessage());</span>
+<span class="nc" id="L50">        final HttpStatusCode status = getHttpStatusCodeFromSystemException(e);</span>
+<span class="nc" id="L51">        return createProblemDetail(e, status);</span>
+
+    }
+
+
+    private ProblemDetail createProblemDetail(final Exception exception,
+        final HttpStatusCode statusCode) {
+<span class="nc" id="L58">        final ProblemDetail problemDetail = ProblemDetail.forStatus(statusCode);</span>
+<span class="nc" id="L59">        problemDetail.setDetail(getMessageFromException(exception));</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (exception instanceof SystemException) {</span>
+<span class="nc" id="L61">            problemDetail.setTitle(((SystemException) exception).getTitle());</span>
+        } else {
+<span class="nc" id="L63">            problemDetail.setTitle(DEFAULT_TITLE);</span>
+        }
+<span class="nc" id="L65">        return problemDetail;</span>
+    }
+
+    private String getMessageFromException(final Exception exception) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (StringUtils.isNotBlank(exception.getMessage())) {</span>
+<span class="nc" id="L70">            return exception.getMessage();</span>
+        }
+<span class="nc" id="L72">        return DEFAULT_MESSAGE;</span>
+    }
+
+    private HttpStatusCode getHttpStatusCodeFromSystemException(final SystemException exception) {
+        try {
+<span class="nc" id="L77">            return HttpStatusCode.valueOf(exception.getStatusCode());</span>
+<span class="nc" id="L78">        } catch (final IllegalArgumentException iae) {</span>
+<span class="nc" id="L79">            logger.info(LOG, ERROR_MESSAGE + exception.getStatusCode());</span>
+<span class="nc" id="L80">            return INTERNAL_SERVER_ERROR;</span>
+        }
+    }
+
+    private HttpStatusCode getHttpStatusCodeFromException(final Exception exception) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (exception instanceof HttpClientErrorException) {</span>
+<span class="nc" id="L86">            return ((HttpClientErrorException) exception).getStatusCode();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (exception instanceof HttpRequestMethodNotSupportedException) {</span>
+<span class="nc" id="L88">            return METHOD_NOT_ALLOWED;</span>
+        }
+<span class="nc" id="L90">        return INTERNAL_SERVER_ERROR;</span>
+    }
+}
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

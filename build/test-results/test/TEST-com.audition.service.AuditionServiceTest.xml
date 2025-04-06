@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.audition.service.AuditionServiceTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2025-04-06T00:57:28" hostname="AMAL3W7R5J7W5" time="0.332">
+  <properties/>
+  <testcase name="whenGetPosts_thenReturnAllFromClient()" classname="com.audition.service.AuditionServiceTest" time="0.31"/>
+  <testcase name="givenInvalidPostId_whenGetPostById_thenThrowSystemException()" classname="com.audition.service.AuditionServiceTest" time="0.003"/>
+  <testcase name="givenInvalidPostId_whenGetPostWithComments_thenThrowSystemException()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenMinId_whenGetFilteredPosts_thenReturnFilteredByMinId()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenAllFilters_whenGetFilteredPosts_thenReturnCombinedFilterResult()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenValidPostId_whenGetCommentsForPost_thenReturnComments()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenInvalidPostId_whenGetCommentsForPost_thenThrowSystemException()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenMaxId_whenGetFilteredPosts_thenReturnFilteredByMaxId()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenTitleContains_whenGetFilteredPosts_thenReturnMatchingTitles()" classname="com.audition.service.AuditionServiceTest" time="0.0"/>
+  <testcase name="givenNoFilters_whenGetFilteredPosts_thenReturnAll()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenValidPostId_whenGetPostById_thenReturnPost()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <testcase name="givenValidPostId_whenGetPostWithComments_thenReturnCombinedObject()" classname="com.audition.service.AuditionServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.audition.common.exception.SystemExceptionTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:49" hostname="AMAL3W7R5J7W5" time="0.006">
+  <properties/>
+  <testcase name="constructorWithMessageShouldSetTitleAndMessage()" classname="com.audition.common.exception.SystemExceptionTest" time="0.002"/>
+  <testcase name="constructorWithDetailTitleAndStatusCodeShouldSetAllFields()" classname="com.audition.common.exception.SystemExceptionTest" time="0.0"/>
+  <testcase name="constructorWithDetailTitleAndThrowableShouldSetFieldsAndCause()" classname="com.audition.common.exception.SystemExceptionTest" time="0.0"/>
+  <testcase name="constructorWithDetailStatusCodeAndThrowableShouldSetFields()" classname="com.audition.common.exception.SystemExceptionTest" time="0.0"/>
+  <testcase name="constructorWithMessageAndThrowableShouldSetCauseAndTitle()" classname="com.audition.common.exception.SystemExceptionTest" time="0.0"/>
+  <testcase name="constructorWithAllFieldsShouldSetEverythingCorrectly()" classname="com.audition.common.exception.SystemExceptionTest" time="0.0"/>
+  <testcase name="defaultConstructorShouldCreateException()" classname="com.audition.common.exception.SystemExceptionTest" time="0.0"/>
+  <testcase name="constructorWithMessageAndStatusCodeShouldSetAllFields()" classname="com.audition.common.exception.SystemExceptionTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

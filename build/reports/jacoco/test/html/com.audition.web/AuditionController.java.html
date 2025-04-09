@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-<span class="nc" id="L20">public class AuditionController {</span>
+<span class="fc" id="L20">public class AuditionController {</span>
 
     private static final String VALIDATION_ERROR = &quot;Validation Error&quot;;
     private static final String INVALID_POST_ID = &quot;Invalid post ID: %s. Must be a numeric value&quot;;
@@ -31,30 +31,30 @@ import org.springframework.web.bind.annotation.RestController;
         @RequestParam(required = false) final Integer maxId,
         @RequestParam(required = false) final String titleContains
     ) {
-<span class="nc" id="L34">        return auditionService.getFilteredPosts(minId, maxId, titleContains);</span>
+<span class="fc" id="L34">        return auditionService.getFilteredPosts(minId, maxId, titleContains);</span>
     }
 
     @RequestMapping(value = &quot;/posts/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public AuditionPost getPostById(@PathVariable(&quot;id&quot;) final String postId) {
-<span class="nc" id="L39">        return handleWithValidatedPostId(postId, auditionService::getPostById);</span>
+<span class="fc" id="L39">        return handleWithValidatedPostId(postId, auditionService::getPostById);</span>
     }
 
     @RequestMapping(value = &quot;/posts/{id}/with-comments&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public AuditionPostWithComments getPostWithComments(@PathVariable(&quot;id&quot;) final String postId) {
-<span class="nc" id="L44">        return handleWithValidatedPostId(postId, auditionService::getPostWithComments);</span>
+<span class="fc" id="L44">        return handleWithValidatedPostId(postId, auditionService::getPostWithComments);</span>
     }
 
     @RequestMapping(value = &quot;/posts/{id}/comments&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List&lt;AuditionPostComment&gt; getCommentsForPost(@PathVariable(&quot;id&quot;) final String postId) {
-<span class="nc" id="L49">        return handleWithValidatedPostId(postId, auditionService::getCommentsForPost);</span>
+<span class="fc" id="L49">        return handleWithValidatedPostId(postId, auditionService::getCommentsForPost);</span>
     }
 
     private &lt;T&gt; T handleWithValidatedPostId(final String postId, final Function&lt;String, T&gt; serviceCall) {
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (!postId.matches(&quot;\\d+&quot;)) {</span>
-<span class="nc" id="L54">            throw new SystemException(String.format(INVALID_POST_ID, postId), VALIDATION_ERROR,</span>
-<span class="nc" id="L55">                HttpStatus.BAD_REQUEST.value());</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (!postId.matches(&quot;\\d+&quot;)) {</span>
+<span class="fc" id="L54">            throw new SystemException(String.format(INVALID_POST_ID, postId), VALIDATION_ERROR,</span>
+<span class="fc" id="L55">                HttpStatus.BAD_REQUEST.value());</span>
         }
-<span class="nc" id="L57">        return serviceCall.apply(postId);</span>
+<span class="fc" id="L57">        return serviceCall.apply(postId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

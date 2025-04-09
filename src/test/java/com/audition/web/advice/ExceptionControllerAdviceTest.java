@@ -4,13 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.audition.common.exception.SystemException;
 import com.audition.common.logging.AuditionLogger;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.client.HttpClientErrorException;
 
 @SuppressWarnings("PMD.UnusedPrivateField")
@@ -70,11 +73,53 @@ class ExceptionControllerAdviceTest {
 
     @Test
     void createProblemDetailShouldFallbackToDefaultMessageIfBlank() {
-        final Exception ex = new Exception((String) null);// message is null
+        final Exception ex = new Exception((String) null); // message is null
 
         final ProblemDetail response = exceptionHandler.handleMainException(ex);
 
         assertEquals("API Error occurred. Please contact support or administrator.", response.getDetail());
         assertEquals("API Error Occurred", response.getTitle());
     }
+
+    @Test
+    void shouldFallbackToInternalServerErrorWhenInvalidStatusCodeInSystemException() {
+        final SystemException exception = new SystemException("Invalid code", "Title",
+            HttpStatus.INTERNAL_SERVER_ERROR.value()); // Invalid HTTP code
+
+        final ProblemDetail response = exceptionHandler.handleSystemException(exception);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+        assertEquals("Title", response.getTitle());
+    }
+
+    @Test
+    void shouldReturnHttpStatusFromHttpClientErrorException() {
+        final HttpClientErrorException exception = HttpClientErrorException.create(
+            HttpStatus.BAD_REQUEST, "Bad request", HttpHeaders.EMPTY, new byte[0], StandardCharsets.UTF_8);
+
+        final ProblemDetail response = exceptionHandler.handleMainException(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
+    @Test
+    void shouldReturnMethodNotAllowedForHttpRequestMethodNotSupportedException() {
+        final HttpRequestMethodNotSupportedException exception =
+            new HttpRequestMethodNotSupportedException("POST");
+
+        final ProblemDetail response = exceptionHandler.handleMainException(exception);
+
+        assertEquals(HttpStatus.METHOD_NOT_ALLOWED.value(), response.getStatus());
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorForGenericException() {
+        final Exception exception = new Exception("Generic failure");
+
+        final ProblemDetail response = exceptionHandler.handleMainException(exception);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+    }
+
+
 }

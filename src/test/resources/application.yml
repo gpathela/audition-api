@@ -10,3 +10,8 @@ application:
     write-timeout: 5000
     connect-timeout: 5000
     response-timeout: 5000
+audition:
+  client:
+    baseUrl: https://jsonplaceholder.typicode.com
+    postsPath: /posts
+    commentsPath: /comments

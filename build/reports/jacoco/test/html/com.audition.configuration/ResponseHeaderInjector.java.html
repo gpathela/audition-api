@@ -17,9 +17,9 @@ public class ResponseHeaderInjector implements HandlerInterceptor, Serializable 
     private static final long serialVersionUID = 1L;
     private final transient Tracer tracer;
 
-<span class="nc" id="L20">    public ResponseHeaderInjector(final Tracer tracer) {</span>
-<span class="nc" id="L21">        this.tracer = tracer;</span>
-<span class="nc" id="L22">    }</span>
+<span class="fc" id="L20">    public ResponseHeaderInjector(final Tracer tracer) {</span>
+<span class="fc" id="L21">        this.tracer = tracer;</span>
+<span class="fc" id="L22">    }</span>
 
     @Override
     public void afterCompletion(@NonNull final HttpServletRequest request,
@@ -27,12 +27,12 @@ public class ResponseHeaderInjector implements HandlerInterceptor, Serializable 
         @NonNull final Object handler,
         @Nullable final Exception ex) {
 
-<span class="nc" id="L30">        final Span currentSpan = tracer.currentSpan();</span>
-<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (currentSpan != null) {</span>
-<span class="nc" id="L32">            response.setHeader(&quot;X-Trace-Id&quot;, currentSpan.context().traceId());</span>
-<span class="nc" id="L33">            response.setHeader(&quot;X-Span-Id&quot;, currentSpan.context().spanId());</span>
+<span class="fc" id="L30">        final Span currentSpan = tracer.currentSpan();</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (currentSpan != null) {</span>
+<span class="fc" id="L32">            response.setHeader(&quot;X-Trace-Id&quot;, currentSpan.context().traceId());</span>
+<span class="fc" id="L33">            response.setHeader(&quot;X-Span-Id&quot;, currentSpan.context().spanId());</span>
         }
-<span class="nc" id="L35">    }</span>
+<span class="fc" id="L35">    }</span>
 }
 
 

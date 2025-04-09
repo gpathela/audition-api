@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.audition.web.AuditionControllerTest$GetPostByIdTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:50" hostname="AMAL3W7R5J7W5" time="0.026">
+  <properties/>
+  <testcase name="givenValidPostIdWhenPostNotFoundThenReturn404()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.019"/>
+  <testcase name="givenNonNumericPostIdWhenGetPostByIdThenReturn400()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.003"/>
+  <testcase name="givenValidPostIdWhenGetPostByIdThenReturnPost()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.003"/>
+  <system-out><![CDATA[2025-04-09 14:39:50.697  INFO 996 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostByIdTest]: GetPostByIdTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-04-09 14:39:50.699  INFO 996 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostByIdTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.audition.common.logging.AuditionLoggerTest$WarnTests" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:49" hostname="AMAL3W7R5J7W5" time="0.002">
+  <properties/>
+  <testcase name="shouldLogWarnMessageWhenWarnIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$WarnTests" time="0.001"/>
+  <testcase name="shouldNotLogWarnMessageWhenWarnIsDisabled()" classname="com.audition.common.logging.AuditionLoggerTest$WarnTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

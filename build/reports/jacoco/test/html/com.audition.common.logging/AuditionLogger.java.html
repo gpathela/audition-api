@@ -5,70 +5,70 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 
 @Component
-<span class="nc" id="L8">public class AuditionLogger {</span>
+<span class="fc" id="L8">public class AuditionLogger {</span>
 
     private static final String DEFAULT_BASIC_RESPONSE_MESSAGE = &quot;Error Code: %s - %s&quot;;
     private static final String DEFAULT_PROBLEM_DETAIL_MESSAGE = &quot;Title: %s\nStatus: %s\nDetail: %s\nInstance: %s&quot;;
 
     public void info(final Logger logger, final String message) {
-<span class="nc bnc" id="L14" title="All 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
-<span class="nc" id="L15">            logger.info(message);</span>
+<span class="fc bfc" id="L14" title="All 2 branches covered.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L15">            logger.info(message);</span>
         }
-<span class="nc" id="L17">    }</span>
+<span class="fc" id="L17">    }</span>
 
     public void info(final Logger logger, final String message, final Object object) {
-<span class="nc bnc" id="L20" title="All 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
-<span class="nc" id="L21">            logger.info(message, object);</span>
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L21">            logger.info(message, object);</span>
         }
-<span class="nc" id="L23">    }</span>
+<span class="fc" id="L23">    }</span>
 
     public void debug(final Logger logger, final String message) {
-<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L27">            logger.debug(message);</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (logger.isDebugEnabled()) {</span>
+<span class="fc" id="L27">            logger.debug(message);</span>
         }
-<span class="nc" id="L29">    }</span>
+<span class="fc" id="L29">    }</span>
 
     public void warn(final Logger logger, final String message) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (logger.isWarnEnabled()) {</span>
-<span class="nc" id="L33">            logger.warn(message);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (logger.isWarnEnabled()) {</span>
+<span class="fc" id="L33">            logger.warn(message);</span>
         }
-<span class="nc" id="L35">    }</span>
+<span class="fc" id="L35">    }</span>
 
     public void error(final Logger logger, final String message) {
-<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (logger.isErrorEnabled()) {</span>
-<span class="nc" id="L39">            logger.error(message);</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (logger.isErrorEnabled()) {</span>
+<span class="fc" id="L39">            logger.error(message);</span>
         }
-<span class="nc" id="L41">    }</span>
+<span class="fc" id="L41">    }</span>
 
     public void logErrorWithException(final Logger logger, final String message, final Exception e) {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (logger.isErrorEnabled()) {</span>
-<span class="nc" id="L45">            logger.error(message, e);</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (logger.isErrorEnabled()) {</span>
+<span class="fc" id="L45">            logger.error(message, e);</span>
         }
-<span class="nc" id="L47">    }</span>
+<span class="fc" id="L47">    }</span>
 
     public void logStandardProblemDetail(final Logger logger, final ProblemDetail problemDetail, final Exception e) {
-<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (logger.isErrorEnabled()) {</span>
-<span class="nc" id="L51">            final var message = createStandardProblemDetailMessage(problemDetail);</span>
-<span class="nc" id="L52">            logger.error(message, e);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (logger.isErrorEnabled()) {</span>
+<span class="fc" id="L51">            final var message = createStandardProblemDetailMessage(problemDetail);</span>
+<span class="fc" id="L52">            logger.error(message, e);</span>
         }
-<span class="nc" id="L54">    }</span>
+<span class="fc" id="L54">    }</span>
 
     public void logHttpStatusCodeError(final Logger logger, final String message, final Integer errorCode) {
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (logger.isErrorEnabled()) {</span>
-<span class="nc" id="L58">            logger.error(createBasicErrorResponseMessage(errorCode, message) + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (logger.isErrorEnabled()) {</span>
+<span class="fc" id="L58">            logger.error(createBasicErrorResponseMessage(errorCode, message) + &quot;\n&quot;);</span>
         }
-<span class="nc" id="L60">    }</span>
+<span class="fc" id="L60">    }</span>
 
     private String createStandardProblemDetailMessage(final ProblemDetail standardProblemDetail) {
-<span class="nc" id="L63">        return String.format(DEFAULT_PROBLEM_DETAIL_MESSAGE,</span>
-<span class="nc" id="L64">            standardProblemDetail.getTitle(),</span>
-<span class="nc" id="L65">            standardProblemDetail.getStatus(),</span>
-<span class="nc" id="L66">            standardProblemDetail.getDetail(),</span>
-<span class="nc" id="L67">            standardProblemDetail.getInstance());</span>
+<span class="fc" id="L63">        return String.format(DEFAULT_PROBLEM_DETAIL_MESSAGE,</span>
+<span class="fc" id="L64">            standardProblemDetail.getTitle(),</span>
+<span class="fc" id="L65">            standardProblemDetail.getStatus(),</span>
+<span class="fc" id="L66">            standardProblemDetail.getDetail(),</span>
+<span class="fc" id="L67">            standardProblemDetail.getInstance());</span>
     }
 
     private String createBasicErrorResponseMessage(final Integer errorCode, final String message) {
-<span class="nc" id="L71">        return String.format(DEFAULT_BASIC_RESPONSE_MESSAGE, errorCode, message);</span>
+<span class="fc" id="L71">        return String.format(DEFAULT_BASIC_RESPONSE_MESSAGE, errorCode, message);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

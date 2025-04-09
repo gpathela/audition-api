@@ -9,22 +9,22 @@ public class SystemException extends RuntimeException {
     private static final long serialVersionUID = -5876728854007114881L;
 <span class="fc" id="L10">    private Integer statusCode;</span>
 <span class="fc" id="L11">    private String title;</span>
-<span class="nc" id="L12">    private String detail;</span>
+<span class="fc" id="L12">    private String detail;</span>
 
     public SystemException() {
-<span class="nc" id="L15">        super();</span>
-<span class="nc" id="L16">    }</span>
+<span class="fc" id="L15">        super();</span>
+<span class="fc" id="L16">    }</span>
 
     public SystemException(final String message) {
-<span class="nc" id="L19">        super(message);</span>
-<span class="nc" id="L20">        this.title = DEFAULT_TITLE;</span>
-<span class="nc" id="L21">    }</span>
+<span class="fc" id="L19">        super(message);</span>
+<span class="fc" id="L20">        this.title = DEFAULT_TITLE;</span>
+<span class="fc" id="L21">    }</span>
 
     public SystemException(final String message, final Integer errorCode) {
-<span class="nc" id="L24">        super(message);</span>
-<span class="nc" id="L25">        this.title = DEFAULT_TITLE;</span>
-<span class="nc" id="L26">        this.statusCode = errorCode;</span>
-<span class="nc" id="L27">    }</span>
+<span class="fc" id="L24">        super(message);</span>
+<span class="fc" id="L25">        this.title = DEFAULT_TITLE;</span>
+<span class="fc" id="L26">        this.statusCode = errorCode;</span>
+<span class="fc" id="L27">    }</span>
 
     public SystemException(final String message, final Throwable exception) {
 <span class="fc" id="L30">        super(message, exception);</span>
@@ -46,11 +46,11 @@ public class SystemException extends RuntimeException {
 <span class="fc" id="L46">    }</span>
 
     public SystemException(final String detail, final Integer errorCode, final Throwable exception) {
-<span class="nc" id="L49">        super(detail, exception);</span>
-<span class="nc" id="L50">        this.statusCode = errorCode;</span>
-<span class="nc" id="L51">        this.title = DEFAULT_TITLE;</span>
-<span class="nc" id="L52">        this.detail = detail;</span>
-<span class="nc" id="L53">    }</span>
+<span class="fc" id="L49">        super(detail, exception);</span>
+<span class="fc" id="L50">        this.statusCode = errorCode;</span>
+<span class="fc" id="L51">        this.title = DEFAULT_TITLE;</span>
+<span class="fc" id="L52">        this.detail = detail;</span>
+<span class="fc" id="L53">    }</span>
 
     public SystemException(final String detail, final String title, final Integer errorCode,
         final Throwable exception) {

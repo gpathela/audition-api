@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.audition.web.advice.ExceptionControllerAdviceTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:50" hostname="AMAL3W7R5J7W5" time="0.006">
+  <properties/>
+  <testcase name="handleHttpClientExceptionShouldReturnCorrectStatusAndMessage()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.001"/>
+  <testcase name="shouldReturnMethodNotAllowedForHttpRequestMethodNotSupportedException()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.001"/>
+  <testcase name="shouldReturnHttpStatusFromHttpClientErrorException()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.001"/>
+  <testcase name="shouldFallbackToInternalServerErrorWhenInvalidStatusCodeInSystemException()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.0"/>
+  <testcase name="handleSystemExceptionWithInvalidStatusShouldReturn500()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.001"/>
+  <testcase name="handleMainExceptionShouldReturnInternalServerError()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.0"/>
+  <testcase name="shouldReturnInternalServerErrorForGenericException()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.001"/>
+  <testcase name="createProblemDetailShouldFallbackToDefaultMessageIfBlank()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.0"/>
+  <testcase name="handleSystemExceptionShouldReturnStatusTitleAndMessage()" classname="com.audition.web.advice.ExceptionControllerAdviceTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,5 +1,6 @@
 package com.audition.integration;
 
+import com.audition.common.constants.ErrorMessages;
 import com.audition.common.exception.SystemException;
 import com.audition.configuration.AuditionClientProperties;
 import com.audition.model.AuditionPost;
@@ -22,9 +23,13 @@ public class AuditionIntegrationClient {
     private final transient RestTemplate restTemplate;
     private final transient AuditionClientProperties auditionClientProperties;
 
-    public AuditionIntegrationClient(RestTemplate restTemplate, AuditionClientProperties auditionClientProperties) {
+    public AuditionIntegrationClient(final RestTemplate restTemplate,
+        final AuditionClientProperties auditionClientProperties) {
         this.restTemplate = restTemplate;
         this.auditionClientProperties = auditionClientProperties;
+        if (auditionClientProperties.getBaseUrl() == null || auditionClientProperties.getBaseUrl().isBlank()) {
+            throw new IllegalStateException(ErrorMessages.MISSING_BASE_URL);
+        }
     }
 
     public List<AuditionPost> getPosts() {
@@ -39,9 +44,11 @@ public class AuditionIntegrationClient {
                 }
             );
 
-            return response.getBody();
+            return response.getBody() != null ? response.getBody() : List.of();
         } catch (RestClientException ex) {
-            throw new SystemException(ex.getMessage(), ex);
+            throw new SystemException(
+                String.format(String.format(ErrorMessages.ERROR_FETCHING_POSTS_MESSAGE, ex.getMessage())),
+                ErrorMessages.ERROR_FETCHING_POSTS, ex);
         }
     }
 
@@ -58,15 +65,17 @@ public class AuditionIntegrationClient {
             return response.getBody();
         } catch (final HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new SystemException("Cannot find a Post with id " + id, "Resource Not Found",
+                throw new SystemException(String.format(ErrorMessages.POST_NOT_FOUND, id),
+                    ErrorMessages.RESOURCE_NOT_FOUND,
                     HttpStatus.NOT_FOUND.value(), e);
             } else {
-                throw new SystemException("Error fetching post with id " + id + ": " + e.getMessage(),
-                    "Error Fetching Post",
+                throw new SystemException(String.format(ErrorMessages.ERROR_FETCHING_POST_MESSAGE, id, e.getMessage()),
+                    ErrorMessages.ERROR_FETCHING_POST,
                     e);
             }
         } catch (RestClientException e) {
-            throw new SystemException("Unexpected error: " + e.getMessage(), "Error Fetching Post", e);
+            throw new SystemException(String.format(ErrorMessages.UNEXPECTED_ERROR, e.getMessage()),
+                ErrorMessages.ERROR_FETCHING_POST, e);
         }
     }
 
@@ -83,12 +92,12 @@ public class AuditionIntegrationClient {
                 new ParameterizedTypeReference<List<AuditionPostComment>>() {
                 }
             );
-            final List<AuditionPostComment> comments = response.getBody();
+            final List<AuditionPostComment> comments = response.getBody() != null ? response.getBody() : List.of();
             return new AuditionPostWithComments(post, comments);
         } catch (final RestClientException e) {
             throw new SystemException(
-                "Failed to fetch post with comments for postId " + postId + ": " + e.getMessage(),
-                "Error Fetching Post With Comments",
+                String.format(ErrorMessages.ERROR_FETCHING_POST_WITH_COMMENTS_MESSAGE, postId, e.getMessage()),
+                ErrorMessages.ERROR_FETCHING_POST_WITH_COMMENTS,
                 e
             );
         }
@@ -106,11 +115,11 @@ public class AuditionIntegrationClient {
                 new ParameterizedTypeReference<List<AuditionPostComment>>() {
                 }
             );
-            return response.getBody();
+            return response.getBody() != null ? response.getBody() : List.of();
         } catch (RestClientException e) {
             throw new SystemException(
-                "Failed to fetch comments for postId " + postId + ": " + e.getMessage(),
-                "Error Fetching Comments",
+                String.format(ErrorMessages.ERROR_FETCHING_POST_COMMENTS_MESSAGE, postId, e.getMessage()),
+                ErrorMessages.ERROR_FETCHING_POST_COMMENTS,
                 e
             );
         }

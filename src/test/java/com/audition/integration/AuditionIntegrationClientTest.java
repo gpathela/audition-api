@@ -5,11 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.audition.common.constants.ErrorMessages;
 import com.audition.common.exception.SystemException;
 import com.audition.configuration.AuditionClientProperties;
 import com.audition.model.AuditionPost;
 import com.audition.model.AuditionPostComment;
 import com.audition.model.AuditionPostWithComments;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -33,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 class AuditionIntegrationClientTest {
 
 
+    public static final String GET_POST_BY_ID_FORMAT = "%s%s/%s";
     @Mock
     private transient RestTemplate restTemplate;
 
@@ -51,7 +54,7 @@ class AuditionIntegrationClientTest {
         client = Mockito.spy(new AuditionIntegrationClient(restTemplate, auditionClientProperties));
     }
 
-    
+
     @Nested
     class GetPostCommentsTest {
 
@@ -105,7 +108,7 @@ class AuditionIntegrationClientTest {
             final SystemException ex = assertThrows(SystemException.class, () -> client.getCommentsForPost(postId));
 
             assertTrue(ex.getMessage().contains("Failed to fetch comments for postId " + postId));
-            assertEquals("Error Fetching Comments", ex.getTitle());
+            assertEquals(ErrorMessages.ERROR_FETCHING_POST_COMMENTS, ex.getTitle());
         }
     }
 
@@ -196,7 +199,7 @@ class AuditionIntegrationClientTest {
             final String postId = "101";
             final AuditionPost expectedPost = new AuditionPost(1, 101, "Title", "Body");
             final ResponseEntity<AuditionPost> responseEntity = new ResponseEntity<>(expectedPost, HttpStatus.OK);
-            final String url = String.format("%s%s/%s", auditionClientProperties.getBaseUrl(),
+            final String url = String.format(GET_POST_BY_ID_FORMAT, auditionClientProperties.getBaseUrl(),
                 auditionClientProperties.getPostsPath(), postId);
             Mockito.when(restTemplate.exchange(
                 ArgumentMatchers.eq(url),
@@ -218,9 +221,9 @@ class AuditionIntegrationClientTest {
             // Given
             final String postId = "999";
             final HttpClientErrorException notFoundException = HttpClientErrorException.create(
-                HttpStatus.NOT_FOUND, "Not Found", HttpHeaders.EMPTY, null, null
+                HttpStatus.NOT_FOUND, "Not Found", HttpHeaders.EMPTY, new byte[0], StandardCharsets.UTF_8
             );
-            final String url = String.format("%s%s/%s", auditionClientProperties.getBaseUrl(),
+            final String url = String.format(GET_POST_BY_ID_FORMAT, auditionClientProperties.getBaseUrl(),
                 auditionClientProperties.getPostsPath(), postId);
             Mockito.when(restTemplate.exchange(
                 ArgumentMatchers.eq(url),
@@ -240,13 +243,13 @@ class AuditionIntegrationClientTest {
             // Given
             final String postId = "101";
             final HttpClientErrorException badRequestException = HttpClientErrorException.create(
-                HttpStatus.BAD_REQUEST,
-                "Bad Request",
+                HttpStatus.NOT_FOUND,
+                "Resource Not Found",
                 HttpHeaders.EMPTY,
-                null,
-                null
+                new byte[0],
+                StandardCharsets.UTF_8
             );
-            final String url = String.format("%s%s/%s", auditionClientProperties.getBaseUrl(),
+            final String url = String.format(GET_POST_BY_ID_FORMAT, auditionClientProperties.getBaseUrl(),
                 auditionClientProperties.getPostsPath(), postId);
             Mockito.when(restTemplate.exchange(
                 ArgumentMatchers.eq(url),
@@ -258,8 +261,8 @@ class AuditionIntegrationClientTest {
             // When & Then
             final SystemException ex = assertThrows(SystemException.class, () -> client.getPostById(postId));
 
-            assertTrue(ex.getMessage().contains("Error fetching post with id " + postId));
-            assertEquals("Error Fetching Post", ex.getTitle());
+            assertTrue(ex.getMessage().contains(String.format(ErrorMessages.POST_NOT_FOUND, postId)));
+            assertEquals(ErrorMessages.RESOURCE_NOT_FOUND, ex.getTitle());
         }
 
         @Test
@@ -267,7 +270,7 @@ class AuditionIntegrationClientTest {
             // Given
             final String postId = "101";
             final RestClientException exception = new RestClientException("Something went wrong");
-            final String url = String.format("%s%s/%s", auditionClientProperties.getBaseUrl(),
+            final String url = String.format(GET_POST_BY_ID_FORMAT, auditionClientProperties.getBaseUrl(),
                 auditionClientProperties.getPostsPath(), postId);
             Mockito.when(restTemplate.exchange(
                 ArgumentMatchers.eq(url),

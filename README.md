@@ -36,10 +36,12 @@ logging, unit testing, and observability integrations.
 ./gradlew clean build
 ./gradlew bootRun
 
+```
 
 ## 📡 Available API Endpoints
 
 ### 🔹 `GET /posts`
+
 Fetch all posts, supports filtering by `minId`, `maxId`, and `titleContains`.
 ![img.png](img.png)
 ![img_1.png](img_1.png)
@@ -47,6 +49,7 @@ Fetch all posts, supports filtering by `minId`, `maxId`, and `titleContains`.
 ---
 
 ### 🔹 `GET /posts/{id}`
+
 Fetch a post by ID.
 
 ![img_2.png](img_2.png)
@@ -54,6 +57,7 @@ Fetch a post by ID.
 ---
 
 ### 🔹 `GET /posts/{id}/with-comments`
+
 Fetch a post with its comments embedded.
 
 ![img_3.png](img_3.png)📸 _Screenshot here_
@@ -61,6 +65,7 @@ Fetch a post with its comments embedded.
 ---
 
 ### 🔹 `GET /comments?postId={id}`
+
 Fetch only the comments for a specific post ID.
 
 ![img_4.png](img_4.png)📸 _Screenshot here_

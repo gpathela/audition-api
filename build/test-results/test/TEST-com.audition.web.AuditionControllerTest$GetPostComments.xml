@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.web.AuditionControllerTest$GetPostComments" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:59" hostname="AMAL3W7R5J7W5" time="0.007">
+<testsuite name="com.audition.web.AuditionControllerTest$GetPostComments" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:28:49" hostname="AMAL3W7R5J7W5" time="0.006">
   <properties/>
   <testcase name="givenValidPostIdWhenNoCommentsExistThenReturnEmptyList()" classname="com.audition.web.AuditionControllerTest$GetPostComments" time="0.002"/>
-  <testcase name="givenValidPostIdWhenGetCommentsForPostThenReturnComments()" classname="com.audition.web.AuditionControllerTest$GetPostComments" time="0.002"/>
-  <testcase name="givenInvalidPostIdWhenGetCommentsForPostThenReturn400()" classname="com.audition.web.AuditionControllerTest$GetPostComments" time="0.002"/>
-  <system-out><![CDATA[2025-04-09 16:21:59.509  INFO 39048 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostComments]: GetPostComments does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-04-09 16:21:59.510  INFO 39048 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostComments
+  <testcase name="givenValidPostIdWhenGetCommentsForPostThenReturnComments()" classname="com.audition.web.AuditionControllerTest$GetPostComments" time="0.001"/>
+  <testcase name="givenInvalidPostIdWhenGetCommentsForPostThenReturn400()" classname="com.audition.web.AuditionControllerTest$GetPostComments" time="0.001"/>
+  <system-out><![CDATA[2025-04-09 16:28:49.897  INFO 44319 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostComments]: GetPostComments does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-04-09 16:28:49.898  INFO 44319 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostComments
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

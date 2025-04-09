@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.web.AuditionControllerTest$GetPostWithComments" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:59" hostname="AMAL3W7R5J7W5" time="0.008">
+<testsuite name="com.audition.web.AuditionControllerTest$GetPostWithComments" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:28:49" hostname="AMAL3W7R5J7W5" time="0.007">
   <properties/>
   <testcase name="givenValidPostIdWhenGetPostWithCommentsThenReturnPostWithComments()" classname="com.audition.web.AuditionControllerTest$GetPostWithComments" time="0.004"/>
   <testcase name="givenInvalidPostIdWhenGetPostWithCommentsThenReturn400()" classname="com.audition.web.AuditionControllerTest$GetPostWithComments" time="0.002"/>
   <testcase name="givenNonExistingPostIdWhenGetPostWithCommentsThenReturn404()" classname="com.audition.web.AuditionControllerTest$GetPostWithComments" time="0.001"/>
-  <system-out><![CDATA[2025-04-09 16:21:59.497  INFO 39048 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostWithComments]: GetPostWithComments does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-04-09 16:21:59.499  INFO 39048 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostWithComments
+  <system-out><![CDATA[2025-04-09 16:28:49.887  INFO 44319 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostWithComments]: GetPostWithComments does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-04-09 16:28:49.888  INFO 44319 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostWithComments
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

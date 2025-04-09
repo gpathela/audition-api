@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.common.logging.AuditionLoggerTest$InfoTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:58" hostname="AMAL3W7R5J7W5" time="0.115">
+<testsuite name="com.audition.common.logging.AuditionLoggerTest$InfoTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:28:49" hostname="AMAL3W7R5J7W5" time="0.101">
   <properties/>
-  <testcase name="shouldNotLogInfoMessageWhenInfoIsDisabled()" classname="com.audition.common.logging.AuditionLoggerTest$InfoTests" time="0.111"/>
-  <testcase name="shouldLogInfoMessageWhenInfoIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$InfoTests" time="0.003"/>
+  <testcase name="shouldNotLogInfoMessageWhenInfoIsDisabled()" classname="com.audition.common.logging.AuditionLoggerTest$InfoTests" time="0.097"/>
+  <testcase name="shouldLogInfoMessageWhenInfoIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$InfoTests" time="0.002"/>
   <testcase name="shouldLogInfoMessageWithObjectWhenInfoIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$InfoTests" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

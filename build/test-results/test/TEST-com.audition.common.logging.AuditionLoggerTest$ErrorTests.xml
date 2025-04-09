@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.common.logging.AuditionLoggerTest$ErrorTests" tests="6" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:58" hostname="AMAL3W7R5J7W5" time="0.005">
+<testsuite name="com.audition.common.logging.AuditionLoggerTest$ErrorTests" tests="6" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:28:49" hostname="AMAL3W7R5J7W5" time="0.005">
   <properties/>
   <testcase name="shouldNotLogErrorMessageWhenErrorIsDisabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.0"/>
-  <testcase name="shouldNotLogHttpStatusCodeErrorWhenErrorIsDisabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.0"/>
+  <testcase name="shouldNotLogHttpStatusCodeErrorWhenErrorIsDisabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.001"/>
   <testcase name="shouldLogStandardProblemDetailWhenErrorIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.001"/>
-  <testcase name="shouldLogErrorMessageWhenErrorIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.0"/>
-  <testcase name="shouldLogErrorWithExceptionWhenErrorIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.0"/>
+  <testcase name="shouldLogErrorMessageWhenErrorIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.001"/>
+  <testcase name="shouldLogErrorWithExceptionWhenErrorIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.001"/>
   <testcase name="shouldLogHttpStatusCodeErrorWhenErrorIsEnabled()" classname="com.audition.common.logging.AuditionLoggerTest$ErrorTests" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

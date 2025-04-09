@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.web.AuditionControllerTest$GetPostByIdTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:59" hostname="AMAL3W7R5J7W5" time="0.017">
+<testsuite name="com.audition.web.AuditionControllerTest$GetPostByIdTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:28:49" hostname="AMAL3W7R5J7W5" time="0.017">
   <properties/>
-  <testcase name="givenValidPostIdWhenPostNotFoundThenReturn404()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.012"/>
-  <testcase name="givenNonNumericPostIdWhenGetPostByIdThenReturn400()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.001"/>
-  <testcase name="givenValidPostIdWhenGetPostByIdThenReturnPost()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.002"/>
-  <system-out><![CDATA[2025-04-09 16:21:59.477  INFO 39048 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostByIdTest]: GetPostByIdTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-04-09 16:21:59.479  INFO 39048 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostByIdTest
+  <testcase name="givenValidPostIdWhenPostNotFoundThenReturn404()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.013"/>
+  <testcase name="givenNonNumericPostIdWhenGetPostByIdThenReturn400()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.002"/>
+  <testcase name="givenValidPostIdWhenGetPostByIdThenReturnPost()" classname="com.audition.web.AuditionControllerTest$GetPostByIdTest" time="0.001"/>
+  <system-out><![CDATA[2025-04-09 16:28:49.867  INFO 44319 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.audition.web.AuditionControllerTest$GetPostByIdTest]: GetPostByIdTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-04-09 16:28:49.868  INFO 44319 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.audition.AuditionApplication for test class com.audition.web.AuditionControllerTest$GetPostByIdTest
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

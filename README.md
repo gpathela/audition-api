@@ -43,8 +43,8 @@ logging, unit testing, and observability integrations.
 ### 🔹 `GET /posts`
 
 Fetch all posts, supports filtering by `minId`, `maxId`, and `titleContains`.
-![img.png](img.png)
-![img_1.png](img_1.png)
+![1.png](1.png)
+![2.png](2.png)
 
 ---
 
@@ -52,7 +52,7 @@ Fetch all posts, supports filtering by `minId`, `maxId`, and `titleContains`.
 
 Fetch a post by ID.
 
-![img_2.png](img_2.png)
+![3.png](3.png)
 
 ---
 
@@ -60,7 +60,7 @@ Fetch a post by ID.
 
 Fetch a post with its comments embedded.
 
-![img_3.png](img_3.png)📸 _Screenshot here_
+![4.png](4.png)📸 _Screenshot here_
 
 ---
 
@@ -68,4 +68,4 @@ Fetch a post with its comments embedded.
 
 Fetch only the comments for a specific post ID.
 
-![img_4.png](img_4.png)📸 _Screenshot here_
+![5.png](5.png)📸 _Screenshot here_

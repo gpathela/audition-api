@@ -44,35 +44,9 @@ logging, unit testing, and observability integrations.
 
 ## 📡 Available API Endpoints
 
-### 🔹 `GET /posts`
+You can view and test all available endpoints interactively using Swagger UI:
 
-Fetch all posts, supports filtering by `minId`, `maxId`, and `titleContains`.
-![1.png](1.png)
-![2.png](2.png)
-
----
-
-### 🔹 `GET /posts/{id}`
-
-Fetch a post by ID.
-
-![3.png](3.png)
-
----
-
-### 🔹 `GET /posts/{id}/with-comments`
-
-Fetch a post with its comments embedded.
-
-![4.png](4.png)
-
----
-
-### 🔹 `GET /comments?postId={id}`
-
-Fetch only the comments for a specific post ID.
-
-![5.png](5.png)
+👉 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ## ✅ Test Coverage
 

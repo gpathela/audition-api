@@ -4,12 +4,16 @@ import com.audition.common.exception.SystemException;
 import com.audition.model.AuditionPost;
 import com.audition.model.AuditionPostComment;
 import com.audition.model.AuditionPostWithComments;
+import com.audition.model.PaginationParams;
 import com.audition.service.AuditionService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-<span class="fc" id="L20">public class AuditionController {</span>
+@Validated
+<span class="fc" id="L25">public class AuditionController {</span>
 
     private static final String VALIDATION_ERROR = &quot;Validation Error&quot;;
     private static final String INVALID_POST_ID = &quot;Invalid post ID: %s. Must be a numeric value&quot;;
@@ -29,32 +34,33 @@ import org.springframework.web.bind.annotation.RestController;
     public List&lt;AuditionPost&gt; getPosts(
         @RequestParam(required = false) final Integer minId,
         @RequestParam(required = false) final Integer maxId,
-        @RequestParam(required = false) final String titleContains
-    ) {
-<span class="fc" id="L34">        return auditionService.getFilteredPosts(minId, maxId, titleContains);</span>
+        @RequestParam(required = false) final String titleContains,
+        @Valid @ModelAttribute final PaginationParams paginationParams) {
+<span class="fc" id="L39">        final List&lt;AuditionPost&gt; filtered = auditionService.getFilteredPosts(minId, maxId, titleContains);</span>
+<span class="fc" id="L40">        return auditionService.paginate(filtered, paginationParams.getPage(), paginationParams.getSize());</span>
     }
 
     @RequestMapping(value = &quot;/posts/{id}&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public AuditionPost getPostById(@PathVariable(&quot;id&quot;) final String postId) {
-<span class="fc" id="L39">        return handleWithValidatedPostId(postId, auditionService::getPostById);</span>
+<span class="fc" id="L45">        return handleWithValidatedPostId(postId, auditionService::getPostById);</span>
     }
 
     @RequestMapping(value = &quot;/posts/{id}/with-comments&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public AuditionPostWithComments getPostWithComments(@PathVariable(&quot;id&quot;) final String postId) {
-<span class="fc" id="L44">        return handleWithValidatedPostId(postId, auditionService::getPostWithComments);</span>
+<span class="fc" id="L50">        return handleWithValidatedPostId(postId, auditionService::getPostWithComments);</span>
     }
 
     @RequestMapping(value = &quot;/posts/{id}/comments&quot;, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List&lt;AuditionPostComment&gt; getCommentsForPost(@PathVariable(&quot;id&quot;) final String postId) {
-<span class="fc" id="L49">        return handleWithValidatedPostId(postId, auditionService::getCommentsForPost);</span>
+<span class="fc" id="L55">        return handleWithValidatedPostId(postId, auditionService::getCommentsForPost);</span>
     }
 
     private &lt;T&gt; T handleWithValidatedPostId(final String postId, final Function&lt;String, T&gt; serviceCall) {
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (!postId.matches(&quot;\\d+&quot;)) {</span>
-<span class="fc" id="L54">            throw new SystemException(String.format(INVALID_POST_ID, postId), VALIDATION_ERROR,</span>
-<span class="fc" id="L55">                HttpStatus.BAD_REQUEST.value());</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (!postId.matches(&quot;\\d+&quot;)) {</span>
+<span class="fc" id="L60">            throw new SystemException(String.format(INVALID_POST_ID, postId), VALIDATION_ERROR,</span>
+<span class="fc" id="L61">                HttpStatus.BAD_REQUEST.value());</span>
         }
-<span class="fc" id="L57">        return serviceCall.apply(postId);</span>
+<span class="fc" id="L63">        return serviceCall.apply(postId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

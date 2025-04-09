@@ -51,46 +51,44 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 <span class="fc" id="L51">        logger.error(LOG, message);</span>
 <span class="fc" id="L52">        final HttpStatusCode status = getHttpStatusCodeFromSystemException(e);</span>
 <span class="fc" id="L53">        return createProblemDetail(e, status);</span>
-
     }
-
 
     private ProblemDetail createProblemDetail(final Exception exception,
         final HttpStatusCode statusCode) {
-<span class="fc" id="L60">        final ProblemDetail problemDetail = ProblemDetail.forStatus(statusCode);</span>
-<span class="fc" id="L61">        problemDetail.setDetail(getMessageFromException(exception));</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (exception instanceof SystemException) {</span>
-<span class="fc" id="L63">            problemDetail.setTitle(((SystemException) exception).getTitle());</span>
+<span class="fc" id="L58">        final ProblemDetail problemDetail = ProblemDetail.forStatus(statusCode);</span>
+<span class="fc" id="L59">        problemDetail.setDetail(getMessageFromException(exception));</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (exception instanceof SystemException) {</span>
+<span class="fc" id="L61">            problemDetail.setTitle(((SystemException) exception).getTitle());</span>
         } else {
-<span class="fc" id="L65">            problemDetail.setTitle(DEFAULT_TITLE);</span>
+<span class="fc" id="L63">            problemDetail.setTitle(DEFAULT_TITLE);</span>
         }
-<span class="fc" id="L67">        return problemDetail;</span>
+<span class="fc" id="L65">        return problemDetail;</span>
     }
 
     private String getMessageFromException(final Exception exception) {
-<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (StringUtils.isNotBlank(exception.getMessage())) {</span>
-<span class="fc" id="L72">            return exception.getMessage();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (StringUtils.isNotBlank(exception.getMessage())) {</span>
+<span class="fc" id="L70">            return exception.getMessage();</span>
         }
-<span class="fc" id="L74">        return DEFAULT_MESSAGE;</span>
+<span class="fc" id="L72">        return DEFAULT_MESSAGE;</span>
     }
 
     private HttpStatusCode getHttpStatusCodeFromSystemException(final SystemException exception) {
         try {
-<span class="fc" id="L79">            return HttpStatusCode.valueOf(exception.getStatusCode());</span>
-<span class="nc" id="L80">        } catch (final IllegalArgumentException iae) {</span>
-<span class="nc" id="L81">            final String message = ERROR_MESSAGE + exception.getStatusCode();</span>
-<span class="nc" id="L82">            logger.info(LOG, message);</span>
-<span class="nc" id="L83">            return INTERNAL_SERVER_ERROR;</span>
+<span class="fc" id="L77">            return HttpStatusCode.valueOf(exception.getStatusCode());</span>
+<span class="nc" id="L78">        } catch (final IllegalArgumentException iae) {</span>
+<span class="nc" id="L79">            final String message = ERROR_MESSAGE + exception.getStatusCode();</span>
+<span class="nc" id="L80">            logger.info(LOG, message);</span>
+<span class="nc" id="L81">            return INTERNAL_SERVER_ERROR;</span>
         }
     }
 
     private HttpStatusCode getHttpStatusCodeFromException(final Exception exception) {
-<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (exception instanceof HttpClientErrorException) {</span>
-<span class="fc" id="L89">            return ((HttpClientErrorException) exception).getStatusCode();</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        } else if (exception instanceof HttpRequestMethodNotSupportedException) {</span>
-<span class="fc" id="L91">            return METHOD_NOT_ALLOWED;</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (exception instanceof HttpClientErrorException) {</span>
+<span class="fc" id="L87">            return ((HttpClientErrorException) exception).getStatusCode();</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        } else if (exception instanceof HttpRequestMethodNotSupportedException) {</span>
+<span class="fc" id="L89">            return METHOD_NOT_ALLOWED;</span>
         }
-<span class="fc" id="L93">        return INTERNAL_SERVER_ERROR;</span>
+<span class="fc" id="L91">        return INTERNAL_SERVER_ERROR;</span>
     }
 }
 

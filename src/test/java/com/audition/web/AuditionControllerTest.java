@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class AuditionControllerTest {
 
     public static final String LENGTH = "$.length()";
+    public static final String LENGTH_OF_LIST_RETURNED = "$[0].id";
     private static final AuditionPost POST1 = new AuditionPost(1, 1, "First title", "Body 1");
     private static final AuditionPost POST2 = new AuditionPost(2, 2, "Second title", "Body 2");
     private static final String POSTS_URL = "/posts";
@@ -185,6 +186,7 @@ class AuditionControllerTest {
         void givenNoParamsWhenGetPostsThenReturnAllPosts() {
             final List<AuditionPost> mockPosts = List.of(POST1, POST2);
             Mockito.when(auditionService.getFilteredPosts(null, null, null)).thenReturn(mockPosts);
+            Mockito.when(auditionService.paginate(mockPosts, 0, 10)).thenReturn(mockPosts);
             try {
                 mockMvc.perform(get(POSTS_URL))
                     .andExpect(status().isOk())
@@ -200,11 +202,12 @@ class AuditionControllerTest {
         void givenMinIdWhenGetPostsThenReturnFilteredPosts() {
             Mockito.when(auditionService.getFilteredPosts(eq(2), isNull(), isNull()))
                 .thenReturn(List.of(POST2));
+            Mockito.when(auditionService.paginate(List.of(POST2), 0, 10)).thenReturn(List.of(POST2));
             try {
                 mockMvc.perform(get(POSTS_URL).param("minId", "2"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath(LENGTH).value(1))
-                    .andExpect(jsonPath("$[0].id").value(2));
+                    .andExpect(jsonPath(LENGTH_OF_LIST_RETURNED).value(2));
             } catch (Exception e) {
                 fail(String.format(MOCK_FAILED, e.getMessage()));
             }
@@ -215,11 +218,12 @@ class AuditionControllerTest {
         void givenMaxIdWhenGetPostsThenReturnFilteredPosts() {
             Mockito.when(auditionService.getFilteredPosts(isNull(), eq(1), isNull()))
                 .thenReturn(List.of(POST1));
+            Mockito.when(auditionService.paginate(List.of(POST1), 0, 10)).thenReturn(List.of(POST1));
             try {
                 mockMvc.perform(get(POSTS_URL).param("maxId", "1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath(LENGTH).value(1))
-                    .andExpect(jsonPath("$[0].id").value(1));
+                    .andExpect(jsonPath(LENGTH_OF_LIST_RETURNED).value(1));
             } catch (Exception e) {
                 fail(String.format(MOCK_FAILED, e.getMessage()));
             }
@@ -230,6 +234,7 @@ class AuditionControllerTest {
         void givenTitleContainsWhenGetPostsThenReturnFilteredPosts() {
             Mockito.when(auditionService.getFilteredPosts(isNull(), isNull(), eq("First")))
                 .thenReturn(List.of(POST1));
+            Mockito.when(auditionService.paginate(List.of(POST1), 0, 10)).thenReturn(List.of(POST1));
             try {
                 mockMvc.perform(get(POSTS_URL).param("titleContains", "First"))
                     .andExpect(status().isOk())
@@ -245,6 +250,7 @@ class AuditionControllerTest {
         void givenAllParamsWhenGetPostsThenReturnFilteredPosts() {
             Mockito.when(auditionService.getFilteredPosts(eq(1), eq(2), eq("Second")))
                 .thenReturn(List.of(POST2));
+            Mockito.when(auditionService.paginate(List.of(POST2), 0, 10)).thenReturn(List.of(POST2));
             try {
                 mockMvc.perform(get(POSTS_URL)
                         .param("minId", "1")
@@ -252,7 +258,7 @@ class AuditionControllerTest {
                         .param("titleContains", "Second"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath(LENGTH).value(1))
-                    .andExpect(jsonPath("$[0].id").value(2));
+                    .andExpect(jsonPath(LENGTH_OF_LIST_RETURNED).value(2));
             } catch (Exception e) {
                 fail(String.format(MOCK_FAILED, e.getMessage()));
             }
@@ -263,6 +269,8 @@ class AuditionControllerTest {
         void givenEmptyTitleContainsWhenGetPostsThenReturnAll() {
             Mockito.when(auditionService.getFilteredPosts(isNull(), isNull(), eq("")))
                 .thenReturn(List.of(POST1, POST2));
+            Mockito.when(auditionService.paginate(List.of(POST1, POST2), 0, 10))
+                .thenReturn(List.of(POST1, POST2));
             try {
                 mockMvc.perform(get(POSTS_URL).param("titleContains", ""))
                     .andExpect(status().isOk())
@@ -271,5 +279,45 @@ class AuditionControllerTest {
                 fail(String.format(MOCK_FAILED, e.getMessage()));
             }
         }
+    }
+
+    @Nested
+    class PaginationTests {
+
+        @Test
+        void givenPaginationParamsWhenGetPostsThenReturnsPaginatedResult() {
+            Mockito.when(auditionService.getFilteredPosts(null, null, null))
+                .thenReturn(List.of(POST1, POST2));
+
+            Mockito.when(auditionService.paginate(List.of(POST1, POST2), 1, 1))
+                .thenReturn(List.of(POST2));
+            try {
+                mockMvc.perform(get(POSTS_URL)
+                        .param("page", "1")
+                        .param("size", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath(LENGTH_OF_LIST_RETURNED).value(POST2.getId()));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
+        @Test
+        void givenNoPaginationParamsWhenGetPostsThenReturnsDefaultPage() {
+            Mockito.when(auditionService.getFilteredPosts(null, null, null))
+                .thenReturn(List.of(POST1, POST2));
+
+            Mockito.when(auditionService.paginate(List.of(POST1, POST2), 0, 10))
+                .thenReturn(List.of(POST1, POST2));
+            try {
+                mockMvc.perform(get(POSTS_URL))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
     }
 }

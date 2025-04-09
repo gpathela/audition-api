@@ -177,5 +177,49 @@ class AuditionServiceTest {
                     .contains("post")));
         }
     }
+
+    @Nested
+    class PaginationTests {
+
+        @Test
+        void returnsAllPostsWhenPageZeroAndSizeExceedsList() {
+            final List<AuditionPost> input = List.of(POST_1, POST_2, POST_3);
+
+            final List<AuditionPost> result = auditionService.paginate(input, 0, 10);
+
+            assertEquals(3, result.size());
+            assertEquals(List.of(POST_1, POST_2, POST_3), result);
+        }
+
+        @Test
+        void returnsCorrectPageSubset() {
+            final List<AuditionPost> input = List.of(POST_1, POST_2, POST_3);
+
+            final List<AuditionPost> result = auditionService.paginate(input, 0, 2); // Page 0 → index 0 to 2
+
+            assertEquals(2, result.size());
+            assertEquals(List.of(POST_1, POST_2), result);
+        }
+
+        @Test
+        void returnsEmptyListWhenPageIsOutOfRange() {
+            final List<AuditionPost> input = List.of(POST_1, POST_2);
+
+            final List<AuditionPost> result = auditionService.paginate(input, 2, 2); // fromIndex = 4
+
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        void returnsPartialListWhenEndIndexExceedsListSize() {
+            final List<AuditionPost> input = List.of(POST_1, POST_2, POST_3);
+
+            final List<AuditionPost> result = auditionService.paginate(input, 1, 5); // fromIndex = 5 → empty
+
+            assertTrue(result.isEmpty());
+        }
+
+
+    }
 }
 

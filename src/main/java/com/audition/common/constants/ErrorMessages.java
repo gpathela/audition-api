@@ -18,4 +18,9 @@ public class ErrorMessages {
     public static final String UNEXPECTED_ERROR = "Unexpected error: %s";
     public static final String ERROR_FETCHING_POST_WITH_COMMENTS_MESSAGE = "Failed to fetch post with comments for postId %s: %s";
     public static final String ERROR_FETCHING_POST_COMMENTS_MESSAGE = "Failed to fetch comments for postId %s: %s";
+
+    //Validation messages for PaginationParams
+    public static final String PAGE_NON_NEGATIVE = "Page must be non-negative";
+    public static final String SIZE_MIN_ONE = "Size must be at least 1";
+    public static final String SIZE_MAX_HUNDRED = "Size cannot exceed 100";
 }

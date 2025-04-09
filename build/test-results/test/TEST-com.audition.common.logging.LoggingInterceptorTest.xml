@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.common.logging.LoggingInterceptorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:49" hostname="AMAL3W7R5J7W5" time="0.026">
+<testsuite name="com.audition.common.logging.LoggingInterceptorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:58" hostname="AMAL3W7R5J7W5" time="0.022">
   <properties/>
-  <testcase name="shouldInterceptAndReturnResponse()" classname="com.audition.common.logging.LoggingInterceptorTest" time="0.026"/>
-  <system-out><![CDATA[2025-04-09 14:39:49.891  INFO 996 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : Request URI: http://localhost/test
-2025-04-09 14:39:49.893  INFO 996 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : Request Method: POST
-2025-04-09 14:39:49.893  INFO 996 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : ➡️ Request Body: test-body
-2025-04-09 14:39:49.893  INFO 996 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : ⬅️ Response Status: 200 OK
-2025-04-09 14:39:49.894  INFO 996 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : ⬅️ Response Body: response-body
+  <testcase name="shouldInterceptAndReturnResponse()" classname="com.audition.common.logging.LoggingInterceptorTest" time="0.022"/>
+  <system-out><![CDATA[2025-04-09 16:21:58.863  INFO 39048 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : Request URI: http://localhost/test
+2025-04-09 16:21:58.864  INFO 39048 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : Request Method: POST
+2025-04-09 16:21:58.865  INFO 39048 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : ➡️ Request Body: test-body
+2025-04-09 16:21:58.865  INFO 39048 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : ⬅️ Response Status: 200 OK
+2025-04-09 16:21:58.865  INFO 39048 --- [    Test worker] c.a.common.logging.LoggingInterceptor    : ⬅️ Response Body: response-body
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

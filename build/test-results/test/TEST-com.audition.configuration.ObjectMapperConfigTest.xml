@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.configuration.ObjectMapperConfigTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:49" hostname="AMAL3W7R5J7W5" time="0.033">
+<testsuite name="com.audition.configuration.ObjectMapperConfigTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:58" hostname="AMAL3W7R5J7W5" time="0.021">
   <properties/>
-  <testcase name="objectMapperShouldNotFailOnUnknownProperties()" classname="com.audition.configuration.ObjectMapperConfigTest" time="0.011"/>
-  <testcase name="objectMapperShouldWriteDateAsStringNotTimestamp()" classname="com.audition.configuration.ObjectMapperConfigTest" time="0.013"/>
-  <testcase name="objectMapperShouldExcludeNullValues()" classname="com.audition.configuration.ObjectMapperConfigTest" time="0.009"/>
+  <testcase name="objectMapperShouldNotFailOnUnknownProperties()" classname="com.audition.configuration.ObjectMapperConfigTest" time="0.006"/>
+  <testcase name="objectMapperShouldWriteDateAsStringNotTimestamp()" classname="com.audition.configuration.ObjectMapperConfigTest" time="0.008"/>
+  <testcase name="objectMapperShouldExcludeNullValues()" classname="com.audition.configuration.ObjectMapperConfigTest" time="0.005"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

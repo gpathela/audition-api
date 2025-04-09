@@ -51,5 +51,14 @@ import org.springframework.stereotype.Service;
 <span class="fc" id="L51">        return auditionIntegrationClient.getCommentsForPost(postId);</span>
     }
 
+    public List&lt;AuditionPost&gt; paginate(final List&lt;AuditionPost&gt; posts, final int page, final int size) {
+<span class="fc" id="L55">        final int fromIndex = page * size;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (fromIndex &gt;= posts.size()) {</span>
+<span class="fc" id="L57">            return List.of();</span>
+        }
+<span class="fc" id="L59">        final int toIndex = Math.min(fromIndex + size, posts.size());</span>
+<span class="fc" id="L60">        return posts.subList(fromIndex, toIndex);</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

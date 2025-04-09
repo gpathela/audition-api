@@ -51,9 +51,7 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
         logger.error(LOG, message);
         final HttpStatusCode status = getHttpStatusCodeFromSystemException(e);
         return createProblemDetail(e, status);
-
     }
-
 
     private ProblemDetail createProblemDetail(final Exception exception,
         final HttpStatusCode statusCode) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-04-09T04:39:50" hostname="AMAL3W7R5J7W5" time="0.009">
+<testsuite name="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-04-09T06:21:59" hostname="AMAL3W7R5J7W5" time="0.005">
   <properties/>
-  <testcase name="givenHttpClientErrorOtherThan404WhenGetPostByIdThenThrowSystemException()" classname="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" time="0.004"/>
+  <testcase name="givenHttpClientErrorOtherThan404WhenGetPostByIdThenThrowSystemException()" classname="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" time="0.002"/>
   <testcase name="givenApiFailureWhenGetPostByIdThenThrowGenericSystemException()" classname="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" time="0.001"/>
   <testcase name="givenInvalidPostIdWhenGetPostByIdThenThrowSystemExceptionWith404()" classname="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" time="0.001"/>
   <testcase name="givenValidPostIdWhenGetPostByIdThenReturnAuditionPost()" classname="com.audition.integration.AuditionIntegrationClientTest$GetPostByIdClass" time="0.001"/>

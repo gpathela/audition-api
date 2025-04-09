@@ -51,4 +51,13 @@ public class AuditionService {
         return auditionIntegrationClient.getCommentsForPost(postId);
     }
 
+    public List<AuditionPost> paginate(final List<AuditionPost> posts, final int page, final int size) {
+        final int fromIndex = page * size;
+        if (fromIndex >= posts.size()) {
+            return List.of();
+        }
+        final int toIndex = Math.min(fromIndex + size, posts.size());
+        return posts.subList(fromIndex, toIndex);
+    }
+
 }

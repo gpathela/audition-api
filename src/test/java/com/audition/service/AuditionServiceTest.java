@@ -11,6 +11,8 @@ import com.audition.model.AuditionPost;
 import com.audition.model.AuditionPostComment;
 import com.audition.model.AuditionPostWithComments;
 import java.util.List;
+import java.util.Locale;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,137 +23,159 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AuditionServiceTest {
 
-    private final AuditionPost POST1 = new AuditionPost(1, 101, "First Post", "Body A");
-    private final AuditionPost POST2 = new AuditionPost(2, 102, "Second Post", "Body B");
-    private final AuditionPost POST3 = new AuditionPost(3, 103, "Another Post", "Body C");
-    private final AuditionPostComment comment = new AuditionPostComment(101, 1, "User", "email@example.com",
+    public static final String FIRST_POST_ID = "101";
+    public static final String UNAVAILABLE_POST_ID = "999";
+    public static final String POST_NOT_FOUND = "Post not found";
+    private static final String FIRST_POST = "First Post";
+    private static final AuditionPost POST_1 = new AuditionPost(1, 101, FIRST_POST, "Body A");
+    private static final AuditionPost POST_2 = new AuditionPost(2, 102, "Second Post", "Body B");
+    private static final AuditionPost POST_3 = new AuditionPost(3, 103, "Another Post", "Body C");
+    private static final AuditionPostComment COMMENT = new AuditionPostComment(101, 1, "User", "email@example.com",
         "Nice one");
     @Mock
-    private AuditionIntegrationClient auditionIntegrationClient;
+    private transient AuditionIntegrationClient auditionIntegrationClient;
     @InjectMocks
-    private AuditionService auditionService;
+    private transient AuditionService auditionService;
 
-    @Test
-    void whenGetPosts_thenReturnAllFromClient() {
-        List<AuditionPost> mockPosts = List.of(POST1, POST2);
-        Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(mockPosts);
+    @Nested
+    class GetPostComments {
 
-        List<AuditionPost> result = auditionService.getPosts();
+        @Test
+        void givenValidPostIdWhenGetCommentsForPostThenReturnComments() {
+            final List<AuditionPostComment> comments = List.of(COMMENT);
 
-        assertEquals(2, result.size());
-        assertEquals("First Post", result.get(0).getTitle());
+            Mockito.when(auditionIntegrationClient.getCommentsForPost(FIRST_POST_ID)).thenReturn(comments);
+
+            final List<AuditionPostComment> result = auditionService.getCommentsForPost(FIRST_POST_ID);
+
+            assertEquals(1, result.size());
+            assertEquals("Nice one", result.get(0).getBody());
+        }
+
+        @Test
+        void givenInvalidPostIdWhenGetCommentsForPostThenThrowSystemException() {
+            Mockito.when(auditionIntegrationClient.getCommentsForPost(UNAVAILABLE_POST_ID))
+                .thenThrow(new SystemException(POST_NOT_FOUND, "Resource Not Found", 404));
+
+            assertThrows(SystemException.class, () -> auditionService.getCommentsForPost(UNAVAILABLE_POST_ID));
+        }
     }
 
+    @Nested
+    class GetPostWithComments {
 
-    @Test
-    void givenNoFilters_whenGetFilteredPosts_thenReturnAll() {
-        Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST1, POST2, POST3));
+        @Test
+        void givenValidPostIdWhenGetPostWithCommentsThenReturnCombinedObject() {
+            final List<AuditionPostComment> comments = List.of(COMMENT);
+            final AuditionPostWithComments postWithComments = new AuditionPostWithComments(POST_1, comments);
 
-        List<AuditionPost> result = auditionService.getFilteredPosts(null, null, null);
+            Mockito.when(auditionIntegrationClient.getPostWithComments(FIRST_POST_ID)).thenReturn(postWithComments);
 
-        assertEquals(3, result.size());
+            final AuditionPostWithComments result = auditionService.getPostWithComments(FIRST_POST_ID);
+
+            assertNotNull(result);
+            assertEquals(FIRST_POST, result.getPost().getTitle());
+            assertEquals(1, result.getComments().size());
+        }
+
+        @Test
+        void givenInvalidPostIdWhenGetPostWithCommentsThenThrowSystemException() {
+            Mockito.when(auditionIntegrationClient.getPostWithComments(UNAVAILABLE_POST_ID))
+                .thenThrow(new SystemException(POST_NOT_FOUND, "Resource Not Found", 404));
+
+            assertThrows(SystemException.class, () -> auditionService.getPostWithComments(UNAVAILABLE_POST_ID));
+        }
     }
 
-    @Test
-    void givenMinId_whenGetFilteredPosts_thenReturnFilteredByMinId() {
-        Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST1, POST2, POST3));
+    @Nested
+    class GetPostsById {
 
-        List<AuditionPost> result = auditionService.getFilteredPosts(102, null, null);
+        @Test
+        void givenValidPostIdWhenGetPostByIdThenReturnPost() {
+            Mockito.when(auditionIntegrationClient.getPostById(FIRST_POST_ID)).thenReturn(POST_1);
 
-        assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(post -> post.getId() >= 2));
+            final AuditionPost result = auditionService.getPostById(FIRST_POST_ID);
+
+            assertNotNull(result);
+            assertEquals(FIRST_POST, result.getTitle());
+        }
+
+        @Test
+        void givenInvalidPostIdWhenGetPostByIdThenThrowSystemException() {
+            Mockito.when(auditionIntegrationClient.getPostById(UNAVAILABLE_POST_ID))
+                .thenThrow(new SystemException(POST_NOT_FOUND, "Resource Not Found", 404));
+
+            final SystemException ex = assertThrows(SystemException.class, () -> auditionService.getPostById(
+                UNAVAILABLE_POST_ID));
+            assertEquals(POST_NOT_FOUND, ex.getMessage());
+        }
     }
 
-    @Test
-    void givenMaxId_whenGetFilteredPosts_thenReturnFilteredByMaxId() {
-        Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST1, POST2, POST3));
+    @Nested
+    class GetPostsTest {
 
-        List<AuditionPost> result = auditionService.getFilteredPosts(null, 102, null);
+        @Test
+        void whenGetPostsThenReturnAllFromClient() {
+            final List<AuditionPost> mockPosts = List.of(POST_1, POST_2);
+            Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(mockPosts);
 
-        assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(post -> post.getId() <= 102));
-    }
+            final List<AuditionPost> result = auditionService.getPosts();
 
-    @Test
-    void givenTitleContains_whenGetFilteredPosts_thenReturnMatchingTitles() {
-        Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST1, POST2, POST3));
+            assertEquals(2, result.size());
+            assertEquals(FIRST_POST, result.get(0).getTitle());
+        }
 
-        List<AuditionPost> result = auditionService.getFilteredPosts(null, null, "another");
 
-        assertEquals(1, result.size());
-        assertEquals("Another Post", result.get(0).getTitle());
-    }
+        @Test
+        void givenNoFiltersWhenGetFilteredPostsThenReturnAll() {
+            Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST_1, POST_2, POST_3));
 
-    @Test
-    void givenAllFilters_whenGetFilteredPosts_thenReturnCombinedFilterResult() {
-        Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST1, POST2, POST3));
+            final List<AuditionPost> result = auditionService.getFilteredPosts(null, null, null);
 
-        List<AuditionPost> result = auditionService.getFilteredPosts(102, 103, "post");
+            assertEquals(3, result.size());
+        }
 
-        assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(post ->
-            post.getId() >= 102 && post.getId() <= 1033 && post.getTitle().toLowerCase().contains("post")));
-    }
+        @Test
+        void givenMinIdWhenGetFilteredPostsThenReturnFilteredByMinId() {
+            Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST_1, POST_2, POST_3));
 
-    @Test
-    void givenValidPostId_whenGetPostById_thenReturnPost() {
-        Mockito.when(auditionIntegrationClient.getPostById("101")).thenReturn(POST1);
+            final List<AuditionPost> result = auditionService.getFilteredPosts(102, null, null);
 
-        AuditionPost result = auditionService.getPostById("101");
+            assertEquals(2, result.size());
+            assertTrue(result.stream().allMatch(post -> post.getId() >= 2));
+        }
 
-        assertNotNull(result);
-        assertEquals("First Post", result.getTitle());
-    }
+        @Test
+        void givenMaxIdWhenGetFilteredPostsThenReturnFilteredByMaxId() {
+            Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST_1, POST_2, POST_3));
 
-    @Test
-    void givenInvalidPostId_whenGetPostById_thenThrowSystemException() {
-        Mockito.when(auditionIntegrationClient.getPostById("999"))
-            .thenThrow(new SystemException("Post not found", "Resource Not Found", 404));
+            final List<AuditionPost> result = auditionService.getFilteredPosts(null, 102, null);
 
-        SystemException ex = assertThrows(SystemException.class, () -> auditionService.getPostById("999"));
-        assertEquals("Post not found", ex.getMessage());
-    }
+            assertEquals(2, result.size());
+            assertTrue(result.stream().allMatch(post -> post.getId() <= 102));
+        }
 
-    @Test
-    void givenValidPostId_whenGetPostWithComments_thenReturnCombinedObject() {
-        List<AuditionPostComment> comments = List.of(comment);
-        AuditionPostWithComments postWithComments = new AuditionPostWithComments(POST1, comments);
+        @Test
+        void givenTitleContainsWhenGetFilteredPostsThenReturnMatchingTitles() {
+            Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST_1, POST_2, POST_3));
 
-        Mockito.when(auditionIntegrationClient.getPostWithComments("101")).thenReturn(postWithComments);
+            final List<AuditionPost> result = auditionService.getFilteredPosts(null, null, "another");
 
-        AuditionPostWithComments result = auditionService.getPostWithComments("101");
+            assertEquals(1, result.size());
+            assertEquals("Another Post", result.get(0).getTitle());
+        }
 
-        assertNotNull(result);
-        assertEquals("First Post", result.getPost().getTitle());
-        assertEquals(1, result.getComments().size());
-    }
+        @Test
+        void givenAllFiltersWhenGetFilteredPostsThenReturnCombinedFilterResult() {
+            Mockito.when(auditionIntegrationClient.getPosts()).thenReturn(List.of(POST_1, POST_2, POST_3));
 
-    @Test
-    void givenInvalidPostId_whenGetPostWithComments_thenThrowSystemException() {
-        Mockito.when(auditionIntegrationClient.getPostWithComments("999"))
-            .thenThrow(new SystemException("Post not found", "Resource Not Found", 404));
+            final List<AuditionPost> result = auditionService.getFilteredPosts(102, 103, "post");
 
-        assertThrows(SystemException.class, () -> auditionService.getPostWithComments("999"));
-    }
-
-    @Test
-    void givenValidPostId_whenGetCommentsForPost_thenReturnComments() {
-        List<AuditionPostComment> comments = List.of(comment);
-
-        Mockito.when(auditionIntegrationClient.getCommentsForPost("101")).thenReturn(comments);
-
-        List<AuditionPostComment> result = auditionService.getCommentsForPost("101");
-
-        assertEquals(1, result.size());
-        assertEquals("Nice one", result.get(0).getBody());
-    }
-
-    @Test
-    void givenInvalidPostId_whenGetCommentsForPost_thenThrowSystemException() {
-        Mockito.when(auditionIntegrationClient.getCommentsForPost("999"))
-            .thenThrow(new SystemException("Post not found", "Resource Not Found", 404));
-
-        assertThrows(SystemException.class, () -> auditionService.getCommentsForPost("999"));
+            assertEquals(2, result.size());
+            assertTrue(result.stream().allMatch(post ->
+                post.getId() >= 102 && post.getId() <= 1033 && post.getTitle().toLowerCase(Locale.getDefault())
+                    .contains("post")));
+        }
     }
 }
 

@@ -6,31 +6,33 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class ResponseHeaderInjector implements HandlerInterceptor {
+public class ResponseHeaderInjector implements HandlerInterceptor, Serializable {
 
-    private final Tracer tracer;
+    private static final long serialVersionUID = 1L;
+    private final transient Tracer tracer;
 
-<span class="fc" id="L18">    public ResponseHeaderInjector(Tracer tracer) {</span>
-<span class="fc" id="L19">        this.tracer = tracer;</span>
-<span class="fc" id="L20">    }</span>
+<span class="nc" id="L20">    public ResponseHeaderInjector(final Tracer tracer) {</span>
+<span class="nc" id="L21">        this.tracer = tracer;</span>
+<span class="nc" id="L22">    }</span>
 
     @Override
-    public void afterCompletion(@NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse response,
-        @NonNull Object handler,
-        @Nullable Exception ex) {
+    public void afterCompletion(@NonNull final HttpServletRequest request,
+        @NonNull final HttpServletResponse response,
+        @NonNull final Object handler,
+        @Nullable final Exception ex) {
 
-<span class="fc" id="L28">        Span currentSpan = tracer.currentSpan();</span>
-<span class="fc bfc" id="L29" title="All 2 branches covered.">        if (currentSpan != null) {</span>
-<span class="fc" id="L30">            response.setHeader(&quot;X-Trace-Id&quot;, currentSpan.context().traceId());</span>
-<span class="fc" id="L31">            response.setHeader(&quot;X-Span-Id&quot;, currentSpan.context().spanId());</span>
+<span class="nc" id="L30">        final Span currentSpan = tracer.currentSpan();</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (currentSpan != null) {</span>
+<span class="nc" id="L32">            response.setHeader(&quot;X-Trace-Id&quot;, currentSpan.context().traceId());</span>
+<span class="nc" id="L33">            response.setHeader(&quot;X-Span-Id&quot;, currentSpan.context().spanId());</span>
         }
-<span class="fc" id="L33">    }</span>
+<span class="nc" id="L35">    }</span>
 }
 
 

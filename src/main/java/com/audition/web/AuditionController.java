@@ -23,13 +23,13 @@ public class AuditionController {
     private static final String INVALID_POST_ID = "Invalid post ID: %s. Must be a numeric value";
 
     @Autowired
-    AuditionService auditionService;
-    
+    private transient AuditionService auditionService;
+
     @RequestMapping(value = "/posts", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AuditionPost> getPosts(
-        @RequestParam(required = false) Integer minId,
-        @RequestParam(required = false) Integer maxId,
-        @RequestParam(required = false) String titleContains
+        @RequestParam(required = false) final Integer minId,
+        @RequestParam(required = false) final Integer maxId,
+        @RequestParam(required = false) final String titleContains
     ) {
         return auditionService.getFilteredPosts(minId, maxId, titleContains);
     }
@@ -40,16 +40,16 @@ public class AuditionController {
     }
 
     @RequestMapping(value = "/posts/{id}/with-comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuditionPostWithComments getPostWithComments(@PathVariable("id") String postId) {
+    public AuditionPostWithComments getPostWithComments(@PathVariable("id") final String postId) {
         return handleWithValidatedPostId(postId, auditionService::getPostWithComments);
     }
 
     @RequestMapping(value = "/posts/{id}/comments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AuditionPostComment> getCommentsForPost(@PathVariable("id") String postId) {
+    public List<AuditionPostComment> getCommentsForPost(@PathVariable("id") final String postId) {
         return handleWithValidatedPostId(postId, auditionService::getCommentsForPost);
     }
 
-    private <T> T handleWithValidatedPostId(String postId, Function<String, T> serviceCall) {
+    private <T> T handleWithValidatedPostId(final String postId, final Function<String, T> serviceCall) {
         if (!postId.matches("\\d+")) {
             throw new SystemException(String.format(INVALID_POST_ID, postId), VALIDATION_ERROR,
                 HttpStatus.BAD_REQUEST.value());

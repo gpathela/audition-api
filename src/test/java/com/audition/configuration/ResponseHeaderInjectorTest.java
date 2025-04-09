@@ -17,21 +17,21 @@ import org.junit.jupiter.api.Test;
 class ResponseHeaderInjectorTest {
 
     @Test
-    void whenCurrentSpanExists_thenTraceHeadersAreSet() {
+    void whenCurrentSpanExistsThenTraceHeadersAreSet() {
         // Arrange
-        Tracer tracer = mock(Tracer.class);
-        Span span = mock(Span.class);
-        TraceContext context = mock(TraceContext.class);
+        final Tracer tracer = mock(Tracer.class);
+        final Span span = mock(Span.class);
+        final TraceContext context = mock(TraceContext.class);
 
         when(tracer.currentSpan()).thenReturn(span);
         when(span.context()).thenReturn(context);
         when(context.traceId()).thenReturn("abc123");
         when(context.spanId()).thenReturn("xyz789");
 
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        final HttpServletRequest request = mock(HttpServletRequest.class);
+        final HttpServletResponse response = mock(HttpServletResponse.class);
 
-        ResponseHeaderInjector interceptor = new ResponseHeaderInjector(tracer);
+        final ResponseHeaderInjector interceptor = new ResponseHeaderInjector(tracer);
 
         // Act
         interceptor.afterCompletion(request, response, new Object(), null);
@@ -43,15 +43,15 @@ class ResponseHeaderInjectorTest {
 
 
     @Test
-    void whenCurrentSpanIsNull_thenNoHeadersAreSet() {
+    void whenCurrentSpanIsNullThenNoHeadersAreSet() {
         // Arrange
-        Tracer tracer = mock(Tracer.class);
+        final Tracer tracer = mock(Tracer.class);
         when(tracer.currentSpan()).thenReturn(null);
 
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        final HttpServletRequest request = mock(HttpServletRequest.class);
+        final HttpServletResponse response = mock(HttpServletResponse.class);
 
-        ResponseHeaderInjector interceptor = new ResponseHeaderInjector(tracer);
+        final ResponseHeaderInjector interceptor = new ResponseHeaderInjector(tracer);
 
         // Act
         interceptor.afterCompletion(request, response, new Object(), null);

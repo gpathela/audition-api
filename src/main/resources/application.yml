@@ -13,6 +13,11 @@ spring:
   sleuth:
     sampler:
       probability: 1.0
+  security:
+    user:
+      name: actuator
+      password: actuator123
+      roles: ACTUATOR
 server:
   max-http-request-header-size: 16KB
 management:
@@ -22,12 +27,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: [ health, info, env, metrics ]
+        include: [ health, info ]
   endpoint:
     health:
-      show-details: when-authorized
+      show-details: always
   server:
     base-path: /actuator
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+audition:
+  client:
+    base-url: https://jsonplaceholder.typicode.com
+    posts-path: /posts
+    comments-path: /comments

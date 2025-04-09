@@ -11,32 +11,36 @@ import org.springframework.http.client.ClientHttpResponse;
 
 public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingInterceptor.class);
 
     @Override
     public ClientHttpResponse intercept(
-        HttpRequest request,
-        byte[] body,
-        ClientHttpRequestExecution execution
+        final HttpRequest request,
+        final byte[] body,
+        final ClientHttpRequestExecution execution
     ) throws IOException {
 
         logRequest(request, body);
-        ClientHttpResponse response = execution.execute(request, body);
+        final ClientHttpResponse response = execution.execute(request, body);
         logResponse(response);
 
         return response;
     }
 
-    private void logRequest(HttpRequest request, byte[] body) {
-        logger.info("➡️ Request URI: {}", request.getURI());
-        logger.info("➡️ Request Method: {}", request.getMethod());
-        logger.info("➡️ Request Body: {}", new String(body, StandardCharsets.UTF_8));
+    private void logRequest(final HttpRequest request, final byte[] body) {
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Request URI: {}", request.getURI());
+            LOGGER.info("Request Method: {}", request.getMethod());
+            LOGGER.info("➡️ Request Body: {}", new String(body, StandardCharsets.UTF_8));
+        }
     }
 
-    private void logResponse(ClientHttpResponse response) throws IOException {
-        String responseBody = new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
-        logger.info("⬅️ Response Status: {}", response.getStatusCode());
-        logger.info("⬅️ Response Body: {}", responseBody);
+    private void logResponse(final ClientHttpResponse response) throws IOException {
+        if (LOGGER.isInfoEnabled()) {
+            final String responseBody = new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
+            LOGGER.info("⬅️ Response Status: {}", response.getStatusCode());
+            LOGGER.info("⬅️ Response Body: {}", responseBody);
+        }
     }
 }
 

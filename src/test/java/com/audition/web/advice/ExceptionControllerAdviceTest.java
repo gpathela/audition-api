@@ -13,21 +13,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.client.HttpClientErrorException;
 
+@SuppressWarnings("PMD.UnusedPrivateField")
 @ExtendWith(MockitoExtension.class)
 class ExceptionControllerAdviceTest {
 
     @InjectMocks
-    private ExceptionControllerAdvice exceptionHandler;
+    private transient ExceptionControllerAdvice exceptionHandler;
 
     @Mock
-    private AuditionLogger logger;
+    private transient AuditionLogger logger;
 
     @Test
-    void handleHttpClientException_shouldReturnCorrectStatusAndMessage() {
-        HttpClientErrorException exception =
+    void handleHttpClientExceptionShouldReturnCorrectStatusAndMessage() {
+        final HttpClientErrorException exception =
             new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Invalid request");
 
-        ProblemDetail response = exceptionHandler.handleHttpClientException(exception);
+        final ProblemDetail response = exceptionHandler.handleHttpClientException(exception);
 
         assertEquals(400, response.getStatus());
         assertEquals("API Error Occurred", response.getTitle());
@@ -35,10 +36,10 @@ class ExceptionControllerAdviceTest {
     }
 
     @Test
-    void handleSystemException_shouldReturnStatusTitleAndMessage() {
-        SystemException exception = new SystemException("Custom Message", "Custom Title", 404);
+    void handleSystemExceptionShouldReturnStatusTitleAndMessage() {
+        final SystemException exception = new SystemException("Custom Message", "Custom Title", 404);
 
-        ProblemDetail response = exceptionHandler.handleSystemException(exception);
+        final ProblemDetail response = exceptionHandler.handleSystemException(exception);
 
         assertEquals(404, response.getStatus());
         assertEquals("Custom Title", response.getTitle());
@@ -46,10 +47,10 @@ class ExceptionControllerAdviceTest {
     }
 
     @Test
-    void handleSystemException_withInvalidStatus_shouldReturn500() {
-        SystemException exception = new SystemException("Oops", "Invalid Code", 500);
+    void handleSystemExceptionWithInvalidStatusShouldReturn500() {
+        final SystemException exception = new SystemException("Oops", "Invalid Code", 500);
 
-        ProblemDetail response = exceptionHandler.handleSystemException(exception);
+        final ProblemDetail response = exceptionHandler.handleSystemException(exception);
 
         assertEquals(500, response.getStatus());
         assertEquals("Invalid Code", response.getTitle());
@@ -57,10 +58,10 @@ class ExceptionControllerAdviceTest {
     }
 
     @Test
-    void handleMainException_shouldReturnInternalServerError() {
-        Exception exception = new RuntimeException("Something went wrong");
+    void handleMainExceptionShouldReturnInternalServerError() {
+        final Exception exception = new RuntimeException("Something went wrong");
 
-        ProblemDetail response = exceptionHandler.handleMainException(exception);
+        final ProblemDetail response = exceptionHandler.handleMainException(exception);
 
         assertEquals(500, response.getStatus());
         assertEquals("API Error Occurred", response.getTitle());
@@ -68,10 +69,10 @@ class ExceptionControllerAdviceTest {
     }
 
     @Test
-    void createProblemDetail_shouldFallbackToDefaultMessageIfBlank() {
-        Exception ex = new Exception((String) null);// message is null
+    void createProblemDetailShouldFallbackToDefaultMessageIfBlank() {
+        final Exception ex = new Exception((String) null);// message is null
 
-        ProblemDetail response = exceptionHandler.handleMainException(ex);
+        final ProblemDetail response = exceptionHandler.handleMainException(ex);
 
         assertEquals("API Error occurred. Please contact support or administrator.", response.getDetail());
         assertEquals("API Error Occurred", response.getTitle());

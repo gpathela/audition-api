@@ -27,7 +27,7 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     private static final String DEFAULT_MESSAGE = "API Error occurred. Please contact support or administrator.";
 
     @Autowired
-    private AuditionLogger logger;
+    private transient AuditionLogger logger;
 
     @ExceptionHandler(HttpClientErrorException.class)
     ProblemDetail handleHttpClientException(final HttpClientErrorException e) {
@@ -38,7 +38,8 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ProblemDetail handleMainException(final Exception e) {
-        logger.error(LOG, e.getMessage());
+        final String message = getMessageFromException(e);
+        logger.error(LOG, message);
         final HttpStatusCode status = getHttpStatusCodeFromException(e);
         return createProblemDetail(e, status);
 
@@ -46,7 +47,8 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(SystemException.class)
     ProblemDetail handleSystemException(final SystemException e) {
-        logger.error(LOG, e.getMessage());
+        final String message = getMessageFromException(e);
+        logger.error(LOG, message);
         final HttpStatusCode status = getHttpStatusCodeFromSystemException(e);
         return createProblemDetail(e, status);
 
@@ -76,7 +78,8 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
         try {
             return HttpStatusCode.valueOf(exception.getStatusCode());
         } catch (final IllegalArgumentException iae) {
-            logger.info(LOG, ERROR_MESSAGE + exception.getStatusCode());
+            final String message = ERROR_MESSAGE + exception.getStatusCode();
+            logger.info(LOG, message);
             return INTERNAL_SERVER_ERROR;
         }
     }

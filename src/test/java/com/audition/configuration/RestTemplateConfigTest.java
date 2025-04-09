@@ -17,21 +17,21 @@ import org.springframework.web.client.RestTemplate;
 class RestTemplateConfigTest {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private transient RestTemplate restTemplate;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private transient ObjectMapper objectMapper;
 
     @Test
-    void restTemplate_shouldHaveLoggingInterceptor() {
-        boolean hasLogging = restTemplate.getInterceptors().stream()
-            .anyMatch(i -> i.getClass().getSimpleName().equals("LoggingInterceptor"));
+    void restTemplateShouldHaveLoggingInterceptor() {
+        final boolean hasLogging = restTemplate.getInterceptors().stream()
+            .anyMatch(i -> "LoggingInterceptor".equals(i.getClass().getSimpleName()));
         assertTrue(hasLogging);
     }
 
     @Test
-    void restTemplate_shouldUseConfiguredObjectMapper() {
-        MappingJackson2HttpMessageConverter converter = restTemplate.getMessageConverters().stream()
+    void restTemplateShouldUseConfiguredObjectMapper() {
+        final MappingJackson2HttpMessageConverter converter = restTemplate.getMessageConverters().stream()
             .filter(c -> c instanceof MappingJackson2HttpMessageConverter)
             .map(c -> (MappingJackson2HttpMessageConverter) c)
             .findFirst()

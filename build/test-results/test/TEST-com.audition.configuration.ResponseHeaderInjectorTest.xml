@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.audition.configuration.ResponseHeaderInjectorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-04-06T04:42:09" hostname="AMAL3W7R5J7W5" time="0.932">
-  <properties/>
-  <testcase name="whenCurrentSpanIsNull_thenNoHeadersAreSet()" classname="com.audition.configuration.ResponseHeaderInjectorTest" time="0.891"/>
-  <testcase name="whenCurrentSpanExists_thenTraceHeadersAreSet()" classname="com.audition.configuration.ResponseHeaderInjectorTest" time="0.04"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

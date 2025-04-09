@@ -11,7 +11,7 @@ public class AuditionPostWithComments {
     AuditionPost post;
     List<AuditionPostComment> comments;
 
-    public AuditionPostWithComments(AuditionPost post, List<AuditionPostComment> comments) {
+    public AuditionPostWithComments(final AuditionPost post, final List<AuditionPostComment> comments) {
         this.post = post;
         this.comments = comments;
     }

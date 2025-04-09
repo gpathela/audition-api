@@ -1,11 +1,11 @@
 package com.audition.integration;
 
 import com.audition.common.exception.SystemException;
+import com.audition.configuration.AuditionClientProperties;
 import com.audition.model.AuditionPost;
 import com.audition.model.AuditionPostComment;
 import com.audition.model.AuditionPostWithComments;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,18 +18,21 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class AuditionIntegrationClient {
 
-    private static final String TYPECODE_URL = "https://jsonplaceholder.typicode.com";
-    private static final String POSTS_URL = TYPECODE_URL + "/posts";
-    private static final String COMMENTS_URL = TYPECODE_URL + "/comments";
 
+    private final transient RestTemplate restTemplate;
+    private final transient AuditionClientProperties auditionClientProperties;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    public AuditionIntegrationClient(RestTemplate restTemplate, AuditionClientProperties auditionClientProperties) {
+        this.restTemplate = restTemplate;
+        this.auditionClientProperties = auditionClientProperties;
+    }
 
     public List<AuditionPost> getPosts() {
         try {
-            ResponseEntity<List<AuditionPost>> response = restTemplate.exchange(
-                POSTS_URL,
+            final String postsUrl = String.format("%s%s", auditionClientProperties.getBaseUrl(),
+                auditionClientProperties.getPostsPath());
+            final ResponseEntity<List<AuditionPost>> response = restTemplate.exchange(
+                postsUrl,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<AuditionPost>>() {
@@ -44,9 +47,10 @@ public class AuditionIntegrationClient {
 
     public AuditionPost getPostById(final String id) {
         try {
-            String url = POSTS_URL + "/" + id;
-            ResponseEntity<AuditionPost> response = restTemplate.exchange(
-                url,
+            final String postUrl = String.format("%s%s/%s", auditionClientProperties.getBaseUrl(),
+                auditionClientProperties.getPostsPath(), id);
+            final ResponseEntity<AuditionPost> response = restTemplate.exchange(
+                postUrl,
                 HttpMethod.GET,
                 null,
                 AuditionPost.class
@@ -55,7 +59,7 @@ public class AuditionIntegrationClient {
         } catch (final HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new SystemException("Cannot find a Post with id " + id, "Resource Not Found",
-                    HttpStatus.NOT_FOUND.value());
+                    HttpStatus.NOT_FOUND.value(), e);
             } else {
                 throw new SystemException("Error fetching post with id " + id + ": " + e.getMessage(),
                     "Error Fetching Post",
@@ -68,16 +72,18 @@ public class AuditionIntegrationClient {
 
     public AuditionPostWithComments getPostWithComments(final String postId) {
         try {
-            AuditionPost post = getPostById(postId); // reuse your existing method
-            String url = POSTS_URL + "/" + postId + "/comments";
-            ResponseEntity<List<AuditionPostComment>> response = restTemplate.exchange(
+            final AuditionPost post = getPostById(postId); // reuse your existing method
+            final String url = String.format("%s%s/%s%s", auditionClientProperties.getBaseUrl(),
+                auditionClientProperties.getPostsPath(), postId, auditionClientProperties.getCommentsPath()
+            );
+            final ResponseEntity<List<AuditionPostComment>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<AuditionPostComment>>() {
                 }
             );
-            List<AuditionPostComment> comments = response.getBody();
+            final List<AuditionPostComment> comments = response.getBody();
             return new AuditionPostWithComments(post, comments);
         } catch (final RestClientException e) {
             throw new SystemException(
@@ -90,8 +96,10 @@ public class AuditionIntegrationClient {
 
     public List<AuditionPostComment> getCommentsForPost(final String postId) {
         try {
-            String url = TYPECODE_URL + "/comments?postId=" + postId;
-            ResponseEntity<List<AuditionPostComment>> response = restTemplate.exchange(
+            final String url = String.format("%s%s?postId=%s", auditionClientProperties.getBaseUrl(),
+                auditionClientProperties.getCommentsPath(), postId
+            );
+            final ResponseEntity<List<AuditionPostComment>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 null,

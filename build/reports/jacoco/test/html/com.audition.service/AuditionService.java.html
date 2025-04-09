@@ -5,41 +5,43 @@ import com.audition.model.AuditionPost;
 import com.audition.model.AuditionPostComment;
 import com.audition.model.AuditionPostWithComments;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-<span class="nc" id="L13">public class AuditionService {</span>
+<span class="nc" id="L14">public class AuditionService {</span>
 
     @Autowired
-    private AuditionIntegrationClient auditionIntegrationClient;
+    private transient AuditionIntegrationClient auditionIntegrationClient;
 
 
     public List&lt;AuditionPost&gt; getPosts() {
-<span class="nc" id="L20">        return auditionIntegrationClient.getPosts();</span>
+<span class="nc" id="L21">        return auditionIntegrationClient.getPosts();</span>
     }
 
-    public List&lt;AuditionPost&gt; getFilteredPosts(Integer minId, Integer maxId, String titleContains) {
-<span class="nc" id="L24">        List&lt;AuditionPost&gt; posts = getPosts();</span>
-<span class="nc" id="L25">        return posts.stream()</span>
-<span class="nc bnc" id="L26" title="All 4 branches missed.">            .filter(post -&gt; minId == null || post.getId() &gt;= minId)</span>
-<span class="nc bnc" id="L27" title="All 4 branches missed.">            .filter(post -&gt; maxId == null || post.getId() &lt;= maxId)</span>
-<span class="nc" id="L28">            .filter(</span>
-<span class="nc bnc" id="L29" title="All 4 branches missed.">                post -&gt; titleContains == null || post.getTitle().toLowerCase().contains(titleContains.toLowerCase()))</span>
-<span class="nc" id="L30">            .collect(Collectors.toList());</span>
+    public List&lt;AuditionPost&gt; getFilteredPosts(final Integer minId, final Integer maxId, final String titleContains) {
+<span class="nc" id="L25">        final List&lt;AuditionPost&gt; posts = getPosts();</span>
+<span class="nc" id="L26">        return posts.stream()</span>
+<span class="nc bnc" id="L27" title="All 4 branches missed.">            .filter(post -&gt; minId == null || post.getId() &gt;= minId)</span>
+<span class="nc bnc" id="L28" title="All 4 branches missed.">            .filter(post -&gt; maxId == null || post.getId() &lt;= maxId)</span>
+<span class="nc" id="L29">            .filter(</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">                post -&gt; titleContains == null || post.getTitle().toLowerCase(Locale.getDefault())</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">                    .contains(titleContains.toLowerCase(Locale.getDefault())))</span>
+<span class="nc" id="L32">            .collect(Collectors.toList());</span>
     }
 
     public AuditionPost getPostById(final String postId) {
-<span class="nc" id="L34">        return auditionIntegrationClient.getPostById(postId);</span>
+<span class="nc" id="L36">        return auditionIntegrationClient.getPostById(postId);</span>
     }
 
-    public AuditionPostWithComments getPostWithComments(String postId) {
-<span class="nc" id="L38">        return auditionIntegrationClient.getPostWithComments(postId);</span>
+    public AuditionPostWithComments getPostWithComments(final String postId) {
+<span class="nc" id="L40">        return auditionIntegrationClient.getPostWithComments(postId);</span>
     }
 
-    public List&lt;AuditionPostComment&gt; getCommentsForPost(String postId) {
-<span class="nc" id="L42">        return auditionIntegrationClient.getCommentsForPost(postId);</span>
+    public List&lt;AuditionPostComment&gt; getCommentsForPost(final String postId) {
+<span class="nc" id="L44">        return auditionIntegrationClient.getCommentsForPost(postId);</span>
     }
 
 }

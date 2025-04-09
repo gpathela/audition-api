@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,22 +23,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
-public class WebServiceConfiguration implements WebMvcConfigurer {
+public class WebServiceConfiguration implements WebMvcConfigurer, Serializable {
 
+    private static final long serialVersionUID = 1L;
     private static final String YEAR_MONTH_DAY_PATTERN = "yyyy-MM-dd";
 
     @Autowired
-    private ResponseHeaderInjector responseHeaderInjector;
+    private transient ResponseHeaderInjector responseHeaderInjector;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(responseHeaderInjector);
     }
 
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setDateFormat(new SimpleDateFormat(YEAR_MONTH_DAY_PATTERN));
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.setDateFormat(new SimpleDateFormat(YEAR_MONTH_DAY_PATTERN, Locale.getDefault()));
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -46,13 +49,13 @@ public class WebServiceConfiguration implements WebMvcConfigurer {
 
     @Bean
     public RestTemplate restTemplate(final ObjectMapper objectMapper) {
-        RestTemplate restTemplate = new RestTemplate(
+        final RestTemplate restTemplate = new RestTemplate(
             new BufferingClientHttpRequestFactory(createClientFactory())
         );
 
         // 1. Use ObjectMapper for message conversion
-        List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
-        for (HttpMessageConverter<?> converter : converters) {
+        final List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : converters) {
             if (converter instanceof MappingJackson2HttpMessageConverter) {
                 ((MappingJackson2HttpMessageConverter) converter).setObjectMapper(objectMapper);
             }

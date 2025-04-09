@@ -1,6 +1,8 @@
 package com.audition.web;
 
+
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,6 +17,7 @@ import com.audition.model.AuditionPostComment;
 import com.audition.model.AuditionPostWithComments;
 import com.audition.service.AuditionService;
 import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,176 +25,251 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.UnusedPrivateField"})
+//Need to avoid as mockMvc.perform throws generic Exception
 @WebMvcTest(AuditionController.class)
 class AuditionControllerTest {
 
+    public static final String LENGTH = "$.length()";
     private static final AuditionPost POST1 = new AuditionPost(1, 1, "First title", "Body 1");
     private static final AuditionPost POST2 = new AuditionPost(2, 2, "Second title", "Body 2");
+    private static final String POSTS_URL = "/posts";
+    private static final String MOCK_FAILED = "MockMvc call failed: %s";
     @Autowired
-    private MockMvc mockMvc;
+    private transient MockMvc mockMvc;
     @MockBean
-    private AuditionService auditionService;
+    private transient AuditionService auditionService;
     @MockBean
-    private AuditionLogger auditionLogger;
+    private transient AuditionLogger auditionLogger;
 
-    @Test
-    void givenNoParams_whenGetPosts_thenReturnAllPosts() throws Exception {
-        List<AuditionPost> mockPosts = List.of(POST1, POST2);
-        Mockito.when(auditionService.getFilteredPosts(null, null, null)).thenReturn(mockPosts);
+    @Nested
+    class GetPostComments {
 
-        mockMvc.perform(get("/posts"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].title").value("First title"));
+        @Test
+        void givenValidPostIdWhenGetCommentsForPostThenReturnComments() {
+            final List<AuditionPostComment> comments = List.of(
+                new AuditionPostComment(1, 1, "Alice", "alice@example.com", "Nice one!")
+            );
+
+            Mockito.when(auditionService.getCommentsForPost("1")).thenReturn(comments);
+            try {
+                mockMvc.perform(get(POSTS_URL + "/1/comments"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(1))
+                    .andExpect(jsonPath("$[0].name").value("Alice"))
+                    .andExpect(jsonPath("$[0].body").value("Nice one!"));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+
+        }
+
+        @Test
+        void givenInvalidPostIdWhenGetCommentsForPostThenReturn400() {
+            try {
+                mockMvc.perform(get(POSTS_URL + "/abc/comments"))
+                    .andExpect(status().isBadRequest());
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
+        @Test
+        void givenValidPostIdWhenNoCommentsExistThenReturnEmptyList() {
+            Mockito.when(auditionService.getCommentsForPost("42")).thenReturn(List.of());
+            try {
+                mockMvc.perform(get(POSTS_URL + "/42/comments"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(0));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
     }
 
-    @Test
-    void givenMinId_whenGetPosts_thenReturnFilteredPosts() throws Exception {
-        Mockito.when(auditionService.getFilteredPosts(eq(2), isNull(), isNull()))
-            .thenReturn(List.of(POST2));
+    @Nested
+    class GetPostWithComments {
 
-        mockMvc.perform(get("/posts").param("minId", "2"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].id").value(2));
+        @Test
+        void givenValidPostIdWhenGetPostWithCommentsThenReturnPostWithComments() {
+            final AuditionPost post = new AuditionPost(1, 1, "Title", "Body");
+            final List<AuditionPostComment> comments = List.of(
+                new AuditionPostComment(1, 1, "User", "user@example.com", "Nice post")
+            );
+            final AuditionPostWithComments combined = new AuditionPostWithComments(post, comments);
+
+            Mockito.when(auditionService.getPostWithComments("1")).thenReturn(combined);
+            try {
+                mockMvc.perform(get(POSTS_URL + "/1/with-comments"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.post.id").value(1))
+                    .andExpect(jsonPath("$.comments.length()").value(1))
+                    .andExpect(jsonPath("$.comments[0].body").value("Nice post"));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
+        @Test
+        void givenInvalidPostIdWhenGetPostWithCommentsThenReturn400() {
+            try {
+                mockMvc.perform(get(POSTS_URL + "/abc/with-comments"))
+                    .andExpect(status().isBadRequest());
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
+        @Test
+        void givenNonExistingPostIdWhenGetPostWithCommentsThenReturn404() {
+            final String postId = "999";
+            Mockito.when(auditionService.getPostWithComments(postId))
+                .thenThrow(new SystemException("Cannot find a Post with id " + postId, "Resource Not Found", 404));
+            try {
+                mockMvc.perform(get(POSTS_URL + "/" + postId + "/with-comments"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string(containsString("Cannot find a Post with id")));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
     }
 
-    @Test
-    void givenMaxId_whenGetPosts_thenReturnFilteredPosts() throws Exception {
-        Mockito.when(auditionService.getFilteredPosts(isNull(), eq(1), isNull()))
-            .thenReturn(List.of(POST1));
+    @Nested
+    class GetPostByIdTest {
 
-        mockMvc.perform(get("/posts").param("maxId", "1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].id").value(1));
+        @Test
+        void givenValidPostIdWhenGetPostByIdThenReturnPost() {
+            final AuditionPost post = new AuditionPost(1, 1, "Test Title", "Test Body");
+
+            Mockito.when(auditionService.getPostById("1")).thenReturn(post);
+            try {
+                mockMvc.perform(get(POSTS_URL + "/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.title").value("Test Title"));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
+        @Test
+        void givenNonNumericPostIdWhenGetPostByIdThenReturn400() {
+            try {
+                mockMvc.perform(get(POSTS_URL + "/abc"))
+                    .andExpect(status().isBadRequest());
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
+
+        @Test
+        void givenValidPostIdWhenPostNotFoundThenReturn404() {
+            final String postId = "999";
+            Mockito.when(auditionService.getPostById(postId))
+                .thenThrow(new SystemException("Cannot find a Post with id " + postId, "Resource Not Found", 404));
+            try {
+                mockMvc.perform(get(POSTS_URL + "/" + postId))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string(containsString("Cannot find a Post")));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
     }
 
-    @Test
-    void givenTitleContains_whenGetPosts_thenReturnFilteredPosts() throws Exception {
-        Mockito.when(auditionService.getFilteredPosts(isNull(), isNull(), eq("First")))
-            .thenReturn(List.of(POST1));
+    @Nested
+    class FilterPostsTest {
 
-        mockMvc.perform(get("/posts").param("titleContains", "First"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].title").value("First title"));
-    }
+        @Test
+        void givenNoParamsWhenGetPostsThenReturnAllPosts() {
+            final List<AuditionPost> mockPosts = List.of(POST1, POST2);
+            Mockito.when(auditionService.getFilteredPosts(null, null, null)).thenReturn(mockPosts);
+            try {
+                mockMvc.perform(get(POSTS_URL))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(2))
+                    .andExpect(jsonPath("$[0].title").value("First title"));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
 
-    @Test
-    void givenAllParams_whenGetPosts_thenReturnFilteredPosts() throws Exception {
-        Mockito.when(auditionService.getFilteredPosts(eq(1), eq(2), eq("Second")))
-            .thenReturn(List.of(POST2));
 
-        mockMvc.perform(get("/posts")
-                .param("minId", "1")
-                .param("maxId", "2")
-                .param("titleContains", "Second"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].id").value(2));
-    }
+        @Test
+        void givenMinIdWhenGetPostsThenReturnFilteredPosts() {
+            Mockito.when(auditionService.getFilteredPosts(eq(2), isNull(), isNull()))
+                .thenReturn(List.of(POST2));
+            try {
+                mockMvc.perform(get(POSTS_URL).param("minId", "2"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(1))
+                    .andExpect(jsonPath("$[0].id").value(2));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
 
-    @Test
-    void givenEmptyTitleContains_whenGetPosts_thenReturnAll() throws Exception {
-        Mockito.when(auditionService.getFilteredPosts(isNull(), isNull(), eq("")))
-            .thenReturn(List.of(POST1, POST2));
 
-        mockMvc.perform(get("/posts").param("titleContains", ""))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(2));
-    }
+        @Test
+        void givenMaxIdWhenGetPostsThenReturnFilteredPosts() {
+            Mockito.when(auditionService.getFilteredPosts(isNull(), eq(1), isNull()))
+                .thenReturn(List.of(POST1));
+            try {
+                mockMvc.perform(get(POSTS_URL).param("maxId", "1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(1))
+                    .andExpect(jsonPath("$[0].id").value(1));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
 
-    @Test
-    void givenValidPostId_whenGetPostById_thenReturnPost() throws Exception {
-        AuditionPost post = new AuditionPost(1, 1, "Test Title", "Test Body");
 
-        Mockito.when(auditionService.getPostById("1")).thenReturn(post);
+        @Test
+        void givenTitleContainsWhenGetPostsThenReturnFilteredPosts() {
+            Mockito.when(auditionService.getFilteredPosts(isNull(), isNull(), eq("First")))
+                .thenReturn(List.of(POST1));
+            try {
+                mockMvc.perform(get(POSTS_URL).param("titleContains", "First"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(1))
+                    .andExpect(jsonPath("$[0].title").value("First title"));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
 
-        mockMvc.perform(get("/posts/1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.title").value("Test Title"));
-    }
 
-    @Test
-    void givenNonNumericPostId_whenGetPostById_thenReturn400() throws Exception {
-        mockMvc.perform(get("/posts/abc"))
-            .andExpect(status().isBadRequest());
-    }
+        @Test
+        void givenAllParamsWhenGetPostsThenReturnFilteredPosts() {
+            Mockito.when(auditionService.getFilteredPosts(eq(1), eq(2), eq("Second")))
+                .thenReturn(List.of(POST2));
+            try {
+                mockMvc.perform(get(POSTS_URL)
+                        .param("minId", "1")
+                        .param("maxId", "2")
+                        .param("titleContains", "Second"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(1))
+                    .andExpect(jsonPath("$[0].id").value(2));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
 
-    @Test
-    void givenValidPostId_whenPostNotFound_thenReturn404() throws Exception {
-        String postId = "999";
-        Mockito.when(auditionService.getPostById(postId))
-            .thenThrow(new SystemException("Cannot find a Post with id " + postId, "Resource Not Found", 404));
 
-        mockMvc.perform(get("/posts/" + postId))
-            .andExpect(status().isNotFound())
-            .andExpect(content().string(containsString("Cannot find a Post")));
-    }
-
-    @Test
-    void givenValidPostId_whenGetPostWithComments_thenReturnPostWithComments() throws Exception {
-        AuditionPost post = new AuditionPost(1, 1, "Title", "Body");
-        List<AuditionPostComment> comments = List.of(
-            new AuditionPostComment(1, 1, "User", "user@example.com", "Nice post")
-        );
-        AuditionPostWithComments combined = new AuditionPostWithComments(post, comments);
-
-        Mockito.when(auditionService.getPostWithComments("1")).thenReturn(combined);
-
-        mockMvc.perform(get("/posts/1/with-comments"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.post.id").value(1))
-            .andExpect(jsonPath("$.comments.length()").value(1))
-            .andExpect(jsonPath("$.comments[0].body").value("Nice post"));
-    }
-
-    @Test
-    void givenInvalidPostId_whenGetPostWithComments_thenReturn400() throws Exception {
-        mockMvc.perform(get("/posts/abc/with-comments"))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void givenNonExistingPostId_whenGetPostWithComments_thenReturn404() throws Exception {
-        String postId = "999";
-        Mockito.when(auditionService.getPostWithComments(postId))
-            .thenThrow(new SystemException("Cannot find a Post with id " + postId, "Resource Not Found", 404));
-
-        mockMvc.perform(get("/posts/" + postId + "/with-comments"))
-            .andExpect(status().isNotFound())
-            .andExpect(content().string(containsString("Cannot find a Post with id")));
-    }
-
-    @Test
-    void givenValidPostId_whenGetCommentsForPost_thenReturnComments() throws Exception {
-        List<AuditionPostComment> comments = List.of(
-            new AuditionPostComment(1, 1, "Alice", "alice@example.com", "Nice one!")
-        );
-
-        Mockito.when(auditionService.getCommentsForPost("1")).thenReturn(comments);
-
-        mockMvc.perform(get("/posts/1/comments"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].name").value("Alice"))
-            .andExpect(jsonPath("$[0].body").value("Nice one!"));
-    }
-
-    @Test
-    void givenInvalidPostId_whenGetCommentsForPost_thenReturn400() throws Exception {
-        mockMvc.perform(get("/posts/abc/comments"))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void givenValidPostId_whenNoCommentsExist_thenReturnEmptyList() throws Exception {
-        Mockito.when(auditionService.getCommentsForPost("42")).thenReturn(List.of());
-
-        mockMvc.perform(get("/posts/42/comments"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(0));
+        @Test
+        void givenEmptyTitleContainsWhenGetPostsThenReturnAll() {
+            Mockito.when(auditionService.getFilteredPosts(isNull(), isNull(), eq("")))
+                .thenReturn(List.of(POST1, POST2));
+            try {
+                mockMvc.perform(get(POSTS_URL).param("titleContains", ""))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath(LENGTH).value(2));
+            } catch (Exception e) {
+                fail(String.format(MOCK_FAILED, e.getMessage()));
+            }
+        }
     }
 }

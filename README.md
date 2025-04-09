@@ -38,6 +38,10 @@ logging, unit testing, and observability integrations.
 
 ```
 
+## Application Starting
+
+![start.png](start.png)
+
 ## 📡 Available API Endpoints
 
 ### 🔹 `GET /posts`
@@ -60,7 +64,7 @@ Fetch a post by ID.
 
 Fetch a post with its comments embedded.
 
-![4.png](4.png)📸 _Screenshot here_
+![4.png](4.png)
 
 ---
 
@@ -68,4 +72,14 @@ Fetch a post with its comments embedded.
 
 Fetch only the comments for a specific post ID.
 
-![5.png](5.png)📸 _Screenshot here_
+![5.png](5.png)
+
+## ✅ Test Coverage
+
+![coverage1.png](coverage1.png)
+![coverage2.png](coverage2.png)
+![coverage3.png](coverage3.png)
+
+## Code Quality Reports
+
+![check1.png](check1.png)
